@@ -46,3 +46,4 @@ Scenario: start with point mass at 0, which moves to the right at rate 1, evlove
 + error metrics
     + cell probabilities (no reconstruction required)
     + performance of reconstruction (L^2 metric?)
++ second order models and pdes, MMBM
