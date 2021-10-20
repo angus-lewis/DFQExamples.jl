@@ -6,4 +6,5 @@ Pkg.activate("../.")
 Pkg.develop(url=pwd()*"/../../DiscretisedFluidQueues.jl")
 Pkg.instantiate(verbose=true)
 using DiscretisedFluidQueues, Plots
-# pyplot()
+# plotly()
+gr()
