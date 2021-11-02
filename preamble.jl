@@ -8,5 +8,7 @@ if !occursin("DFQExamples.jl", Base.active_project())
     Pkg.develop(url=pwd()*"/../DiscretisedFluidQueues.jl")
     Pkg.instantiate()
 end
-using DiscretisedFluidQueues, Plots, DataFrames, CSV, LinearAlgebra
+using DiscretisedFluidQueues, Plots, DataFrames, CSV, LinearAlgebra, JLD2
+import Distributions 
+
 plotlyjs()
