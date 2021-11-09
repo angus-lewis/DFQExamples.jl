@@ -1,11 +1,11 @@
 import Pkg
-println(pwd())
-Pkg.activate(".")
+println(@__DIR__)
 if !occursin("DFQExamples.jl", Base.active_project())
     # Pkg.add(url="https://github.com/angus-lewis/DiscretisedFluidQueues")
     # Pkg.rm("DiscretisedFluidQueues")
+    Pkg.activate(@__DIR__)
     display(!occursin("DFQExamples.jl", Base.active_project()))
-    Pkg.develop(url=pwd()*"/../DiscretisedFluidQueues.jl")
+    Pkg.develop(url=(@__DIR__)*"/../DiscretisedFluidQueues.jl")
     Pkg.instantiate()
 end
 using DiscretisedFluidQueues, Plots, DataFrames, CSV, LinearAlgebra, JLD2
