@@ -10,5 +10,6 @@ if !occursin("DFQExamples.jl", Base.active_project())
 end
 using DiscretisedFluidQueues, Plots, DataFrames, CSV, LinearAlgebra, JLD2
 import Distributions 
+include((@__DIR__)*"/SFM_operators.jl")
 
 plotlyjs()
