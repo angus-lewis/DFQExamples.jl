@@ -2,14 +2,14 @@ include("preamble.jl")
 
 T = [0.0 0.0; 1.0 -1.0]
 c = [1.0; 0.0]
-model = BoundedFluidQueue(T,c)
+model = BoundedFluidQueue(T,c,10.0)
 
 hx = 1.0
-nodes = 0.0:hx:10.0
+nodes = 0.0:hx:model.b
 t = 4.0
 h = 0.005 # I think this should be less than 0.0087 to obey CFL-like stuff
 x_lims = (-0.1,10.1)
-
+n_evals = 10_001
 norm_pdf(x) = Distributions.pdf(Distributions.Normal(2.5,0.5),x)
 norm_cdf(x) = Distributions.cdf(Distributions.Normal(2.5,0.5),x)
 orders = 1:2:21
@@ -47,7 +47,7 @@ PDFs = [(z,j)->exp(T[2,2]*t)*exp(-T[2,2]*z/c[1])*-T[2,2]/c[1]*(z<=c[1]*t);
 
 init_distns = [x->left_point_mass(2,x);
          x->interior_point_mass(0.5,1,x);
-    [ x->SFMDistribution(PDF0s[i],x,TrapezoidRule;fun_evals=2001) for i in 3:length(PDFs)]]
+    [ x->SFMDistribution(PDF0s[i],x,TrapezoidRule;fun_evals=n_evals) for i in 3:length(PDFs)]]
     # x->SFMDistribution(PDFs[2],x,TrapezoidRule;fun_evals=2001);
     # x->SFMDistribution(PDFs[3],x,TrapezoidRule;fun_evals=2001);
     # [ x->SFMDistribution(PDFs[i],x) for i in 4:length(PDFs)]]
@@ -108,10 +108,10 @@ for (func_count,init_dist_fun) in enumerate(init_distns)
                 rec = (mtype==FRAPMesh) ? plt_type(dt, eval(Symbol(:normalised_closing_operator_,plt_type))) : plt_type(dt)
 
                 ## errors 
-                (plt_type==cdf) && (L1_cdf_error_row[c_mesh] = log10(DiscretisedFluidQueues.Lp(x->rec(x,1),x->CDFs[func_count](x,1),range(-eps(),10+eps(),length=2001))))
-                (plt_type==cdf) && (ks_error_row[c_mesh] = log10(DiscretisedFluidQueues.kolmogorov_smirnov(x->rec(x,1),x->CDFs[func_count](x,1),range(-eps(),10+eps(),length=2001))))
-                (plt_type==pdf) && (L1_pdf_error_row[c_mesh] = log10(DiscretisedFluidQueues.Lp(x->rec(x,1),x->PDFs[func_count](x,1),range(-eps(),10+eps(),length=2001))))
-                (plt_type==pdf) && (L2_pdf_error_row[c_mesh] = log10(DiscretisedFluidQueues.Lp(x->rec(x,1),x->PDFs[func_count](x,1),range(-eps(),10+eps(),length=2001),2)))
+                (plt_type==cdf) && (L1_cdf_error_row[c_mesh] = log10(DiscretisedFluidQueues.Lp(x->rec(x,1),x->CDFs[func_count](x,1),range(-eps(),10+eps(),length=n_evals))))
+                (plt_type==cdf) && (ks_error_row[c_mesh] = log10(DiscretisedFluidQueues.kolmogorov_smirnov(x->rec(x,1),x->CDFs[func_count](x,1),range(-eps(),10+eps(),length=n_evals))))
+                (plt_type==pdf) && (L1_pdf_error_row[c_mesh] = log10(DiscretisedFluidQueues.Lp(x->rec(x,1),x->PDFs[func_count](x,1),range(-eps(),10+eps(),length=n_evals))))
+                (plt_type==pdf) && (L2_pdf_error_row[c_mesh] = log10(DiscretisedFluidQueues.Lp(x->rec(x,1),x->PDFs[func_count](x,1),range(-eps(),10+eps(),length=n_evals),2)))
                 
                 ## plotting...
                 y_lim_vals = (plt_type==pdf) ? pdf_ylims[func_count] : (-0.2,1.2)

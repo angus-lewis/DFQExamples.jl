@@ -1,7 +1,7 @@
 # include("../preamble.jl")
-include((@__DIR__)*"/../../preamble.jl")
+# include((@__DIR__)*"/../../preamble.jl")
 
-T = [-1.1 1.1; 0.5 -0.5]
+T = [-1.1 1.1; 1.0 -1.0]
 c = [1.0; -1.0]
 b_absorbing = 10.0 
 

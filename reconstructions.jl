@@ -2,12 +2,12 @@ include("preamble.jl")
 
 T = fill(0.0,1,1)
 c = [1.0]
-model = BoundedFluidQueue(T,c)
-
-nodes = 0.0:1.0:1.0
+model = BoundedFluidQueue(T,c,1.0)
+hx = 1.0
+nodes = 0.0:hx:model.b
 
 x_lims = (-0.1,1.1)
-
+n_evals = 10_001
 ## First, lets examin closing vectors for QBDRAP 
 orders = 1:2:21
 CDFs = [
@@ -35,7 +35,7 @@ PDFs = [
     (z,i)->pdf(ConcentratedMatrixExponential(5,mean=0.5))(z)
     ]
 distns = [x->interior_point_mass(0.5,1,x);
-    [ x->SFMDistribution(PDFs[i],x,TrapezoidRule;fun_evals=2001) for i in 2:length(PDFs)]]
+    [ x->SFMDistribution(PDFs[i],x,TrapezoidRule;fun_evals=n_evals) for i in 2:length(PDFs)]]
     # x->SFMDistribution(PDFs[2],x,TrapezoidRule;fun_evals=2001);
     # x->SFMDistribution(PDFs[3],x,TrapezoidRule;fun_evals=2001);
     # [ x->SFMDistribution(PDFs[i],x) for i in 4:length(PDFs)]]
@@ -83,10 +83,10 @@ for (func_count,init_dist_fun) in enumerate(distns)
                 rec = plt_type(d0, reconstruction)
 
                 ## errors 
-                (plt_type==cdf) && (L1_cdf_error_row[c_mesh] = log10(DiscretisedFluidQueues.Lp(x->rec(x,1),x->CDFs[func_count](x,1),range(0,1,length=2001))))
-                (plt_type==cdf) && (ks_error_row[c_mesh] = log10(DiscretisedFluidQueues.kolmogorov_smirnov(x->rec(x,1),x->CDFs[func_count](x,1),range(0,1,length=2001))))
-                (plt_type==pdf) && (L1_pdf_error_row[c_mesh] = log10(DiscretisedFluidQueues.Lp(x->rec(x,1),x->PDFs[func_count](x,1),range(0,1,length=2001))))
-                (plt_type==pdf) && (L2_pdf_error_row[c_mesh] = log10(DiscretisedFluidQueues.Lp(x->rec(x,1),x->PDFs[func_count](x,1),range(0,1,length=2001),2)))
+                (plt_type==cdf) && (L1_cdf_error_row[c_mesh] = log10(DiscretisedFluidQueues.Lp(x->rec(x,1),x->CDFs[func_count](x,1),range(0,1,length=n_evals))))
+                (plt_type==cdf) && (ks_error_row[c_mesh] = log10(DiscretisedFluidQueues.kolmogorov_smirnov(x->rec(x,1),x->CDFs[func_count](x,1),range(0,1,length=n_evals))))
+                (plt_type==pdf) && (L1_pdf_error_row[c_mesh] = log10(DiscretisedFluidQueues.Lp(x->rec(x,1),x->PDFs[func_count](x,1),range(0,1,length=n_evals))))
+                (plt_type==pdf) && (L2_pdf_error_row[c_mesh] = log10(DiscretisedFluidQueues.Lp(x->rec(x,1),x->PDFs[func_count](x,1),range(0,1,length=n_evals),2)))
 
 
                 ## plotting...
@@ -214,25 +214,27 @@ for (func_count,init_dist_fun) in enumerate(distns)
     mkpath(pth*"/data")
     mkpath(pth*"/figs")
     
-    L1_cdf_errors = DataFrame(DG = Float64[], QBDRAP = Float64[])
-    ks_errors = DataFrame(DG = Float64[], QBDRAP = Float64[])
-    L1_pdf_errors = DataFrame(DG = Float64[], QBDRAP = Float64[])
-    L2_pdf_errors = DataFrame(DG = Float64[], QBDRAP = Float64[])
+    L1_cdf_errors = DataFrame(DG = Float64[], Order_1 = Float64[], QBDRAP = Float64[])
+    ks_errors = DataFrame(DG = Float64[], Order_1 = Float64[], QBDRAP = Float64[])
+    L1_pdf_errors = DataFrame(DG = Float64[], Order_1 = Float64[], QBDRAP = Float64[])
+    L2_pdf_errors = DataFrame(DG = Float64[], Order_1 = Float64[], QBDRAP = Float64[])
     for plt_type in (cdf,pdf)
-        p = plot(layout=(2,length(orders)),legend=false)
+        p = plot(layout=(3,length(orders)),legend=false)
         linetypes = [:solid,:solid,:solid]
         c_order = 0
         for order in orders
             c_order += 1
             c_mesh = 0
 
-            L1_cdf_error_row = [ 0.0 0.0]
-            ks_error_row = [ 0.0 0.0]
-            L1_pdf_error_row = [ 0.0 0.0]
-            L2_pdf_error_row = [ 0.0 0.0]
-            for mtype in (DGMesh,FRAPMesh)
+            L1_cdf_error_row = [ 0.0 0.0 0.0]
+            ks_error_row = [ 0.0 0.0 0.0]
+            L1_pdf_error_row = [ 0.0 0.0 0.0]
+            L2_pdf_error_row = [ 0.0 0.0 0.0]
+            for mtype in (DGMesh,DGMesh,FRAPMesh)
                 c_mesh += 1
-                mesh = mtype(nodes,order)
+                tmp_nodes = c_mesh==2 ? (nodes[1]:(hx/order):nodes[end]) : nodes
+                tmp_order = c_mesh==2 ? 1 : order
+                mesh = mtype(tmp_nodes,tmp_order)
 
                 dq = DiscretisedFluidQueue(model,mesh)
 
@@ -242,10 +244,10 @@ for (func_count,init_dist_fun) in enumerate(distns)
                 rec = (mtype==FRAPMesh) ? plt_type(d0, eval(Symbol(:normalised_closing_operator_,plt_type))) : plt_type(d0)
 
                 ## errors 
-                (plt_type==cdf) && (L1_cdf_error_row[c_mesh] = log10(DiscretisedFluidQueues.Lp(x->rec(x,1),x->CDFs[func_count](x,1),range(eps(),1-eps(),length=2001))))
-                (plt_type==cdf) && (ks_error_row[c_mesh] = log10(DiscretisedFluidQueues.kolmogorov_smirnov(x->rec(x,1),x->CDFs[func_count](x,1),range(eps(),1-eps(),length=2001))))
-                (plt_type==pdf) && (L1_pdf_error_row[c_mesh] = log10(DiscretisedFluidQueues.Lp(x->rec(x,1),x->PDFs[func_count](x,1),range(eps(),1-eps(),length=2001))))
-                (plt_type==pdf) && (L2_pdf_error_row[c_mesh] = log10(DiscretisedFluidQueues.Lp(x->rec(x,1),x->PDFs[func_count](x,1),range(eps(),1-eps(),length=2001),2)))
+                (plt_type==cdf) && (L1_cdf_error_row[c_mesh] = log10(DiscretisedFluidQueues.Lp(x->rec(x,1),x->CDFs[func_count](x,1),range(eps(),1-eps(),length=n_evals))))
+                (plt_type==cdf) && (ks_error_row[c_mesh] = log10(DiscretisedFluidQueues.kolmogorov_smirnov(x->rec(x,1),x->CDFs[func_count](x,1),range(eps(),1-eps(),length=n_evals))))
+                (plt_type==pdf) && (L1_pdf_error_row[c_mesh] = log10(DiscretisedFluidQueues.Lp(x->rec(x,1),x->PDFs[func_count](x,1),range(eps(),1-eps(),length=n_evals))))
+                (plt_type==pdf) && (L2_pdf_error_row[c_mesh] = log10(DiscretisedFluidQueues.Lp(x->rec(x,1),x->PDFs[func_count](x,1),range(eps(),1-eps(),length=n_evals),2)))
                 
                 ## plotting...
                 y_lim_vals = (plt_type==pdf) ? (-3.0,9.0) : (-0.2,1.4)
@@ -272,7 +274,7 @@ for (func_count,init_dist_fun) in enumerate(distns)
                 end
                 if c_mesh == 1 
                     plot!(p.layout.grid[c_mesh,c_order]; title=string(order),legend=false)
-                elseif c_mesh == 2
+                elseif c_mesh == 3
                     xticks!(p.layout.grid[c_mesh,c_order], nodes)
                     plot!(p.layout.grid[c_mesh,c_order]; xlabel="x",legend=false)
                 end
