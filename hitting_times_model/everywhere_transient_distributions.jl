@@ -24,11 +24,20 @@ function run_transient(m_str,ic_str,ic,d0_map,rng)
 
     # construct all the approximations
     models = make_approximations(orders,approx_types,d0_map,map_to_t)
-    # @eval models=$models
-    # sims to compare to 
     sims = simulate_model(model,fixed_time(transient_time),n_sims,ic,pth,rng)
+
+    # evaluate models 
+    _phases = 1:2
+    grid = range(0.0,sims.model.b,length=n_err_evals)
+    nodes = models[orders[1]]["dg1"]["dq"].mesh.nodes
+    centres = (nodes[1:end-1] + nodes[2:end])./2
+    @evaluate!(models,(cdf,pdf,cell_probs),gird,_phases)
+    # @eval models=$models
+    # evlauate sims
+    sims_evaluated = @evaluate(sims,(cdf,),grid,_phases)
+    sims_evaluated["cell_probs"] = cell_probs(sims,nodes).(centres,_phases)
     # @eval sims=$sims
-    cdf_ci = cdf_bootstrap_ci(sims,n_boot,rng)
+    truth_lwr, truth_upr = cdf_bootstrap_ci(sims,n_boot,grid,_phases,(0.05,0.95),rng)
     truth = cdf(sims)
 
     # parameters for plotting
@@ -36,7 +45,6 @@ function run_transient(m_str,ic_str,ic,d0_map,rng)
     _yticks = 0:0.1:0.65#(0:0.1:0.4,
     _xlims = (-eps(),model.b+eps())
     _xticks = 0:5:10
-    _phases = 1:2
     make_df_plots!(models,cdf,truth,cdf_ci,pth*"/figs/cdfs",_xlims,_ylims,_xticks,_yticks,_phases)
     _ylims = (-0.01,0.4)
     _yticks = 0:0.1:0.4
@@ -50,10 +58,8 @@ function run_transient(m_str,ic_str,ic,d0_map,rng)
         "L¹ error between the true CDF and approximations";
         "L² error between the true CDF and approximations";
     ]
-    grid = range(0.0,sims.model.b,length=n_err_evals)
     analysis(err_funs,models,sims,pth,n_boot,grid,_phases,titles,rng)
 
-    nodes = models[orders[1]]["dg1"]["dq"].mesh.nodes
     err_funs = ((L1_cell_probs,identity,x->cell_probs(x,nodes)),) 
     titles = ["L¹ error between the cell masses"]
     for o in keys(models)
@@ -62,7 +68,6 @@ function run_transient(m_str,ic_str,ic,d0_map,rng)
             models[o]["dg1"]["coeffs_mapped"].dq)
     end
     # @eval models=$models 
-    grid = (nodes[1:end-1] + nodes[2:end])./2
     analysis(err_funs,models,sims,pth,n_boot,grid,_phases,titles,rng)
     return nothing 
 end

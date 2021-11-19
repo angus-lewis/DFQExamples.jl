@@ -30,6 +30,84 @@ function make_approximations(orders,approx_types,d0_map,a_map=identity)
     return models
 end 
 
+macro evaluate!(models,funs,grid,_phases)
+    expr = quote 
+        evaluate!(
+            $(esc(models)),
+            $(esc(funs)),
+            $(esc(grid)),
+            $(esc(_phases)),
+            $(string.(esc(funs).args[1].args)),
+        )
+    end
+    return expr
+end
+
+function evaluate!(models,funs::Tuple{Functions},grid::AbstractVector,
+    _phases::AbstractVector{Int},fun_names::Union{AbstractVector{String},Tuple})
+
+    orders = sort([l for l in keys(models)])
+    k = keys(models[orders[1]])
+    model = models[orders[1]][k[1]]["coeffs_mapped"].dq.model
+    for (c_o,o) in enumerate(orders)
+        for (c_m,m) in enumerate(sort([i for i in k]))
+            for (c_f,f) in enumerate(funs)
+                temp_fun = f(models[o][m]["coeffs_mapped"])
+                models[c_o][c_m][fun_names[c_f]*"_evaluated"] = temp_fun.(grid[:],_phases)
+                models[c_o][c_m]["boundary_masses"] = 
+                    models[o][m]["coeffs_mapped"][[1:N₋(model);end-N₊(model)+1:end]]
+            end
+        end
+    end
+    return nothing
+end
+# evaluate!(models,fun::Functions,grid::AbstractVector,_phases::AbstractVector{Int},fun_names::Union{AbstractVector{String},Tuple}) = 
+#     evaluate!(models,(fun,),grid,_phases,fun_names)
+
+macro evaluate!(models,funs,grid)
+    expr = quote 
+        evaluate!(
+            $(esc(models)),
+            $(esc(funs)),
+            $(esc(grid)),
+            $(string.(esc(funs).args[1].args)),
+        )
+    end
+    return expr
+end
+function evaluate!(models,funs::Tuple{Functions},grid::AbstractVector,fun_names::Union{AbstractVector{String},Tuple}) 
+    o = sort([l for l in keys(models)])
+    k = keys(models[o[1]])
+    model = models[o[1]][k[1]]["coeffs_mapped"].dq.model
+    evaluate!(models,funs,grid,1:n_phases(model),fun_names)
+    return nothing
+end
+# evaluate!(models,fun::Function,grid::AbstractVector,fun_names::Union{AbstractVector{String},Tuple}) = 
+#     evaluate!(models,(fun,),grid,fun_names)
+
+macro evaluate(sims,funs,grid,_phases)
+    return quote 
+        evaluate($(esc(sims)),$(esc(funs)),$(esc(grid)),$(esc(_phases)),$(string.(esc(funs).args[1].args)))
+    end
+end
+function evaluate(sims::Simulation,funs::Tuple{Functions},grid::AbstractVector,_phases::AbstractVector{Int},fun_names::Union{AbstractVector{String},Tuple})
+    evaluated = Dict{String,AbstractArray}()
+    for (c_f,f) in enumerate(funs)
+        temp_fun = f(sims)
+        evaluated[fun_names[c_f]*"_evaluated"] = temp_fun.(grid,_phases)
+        evaluated["boundary_masses"] = sim_point_masses(sims)
+    end
+    return evaluated
+end
+macro evaluate(sims,funs,grid)
+    return quote 
+        evaluate($(esc(sims)),$(esc(funs)),$(esc(grid)),$(string.(esc(funs).args[1].args)))
+    end
+end
+function evaluate(sims::Simulation,funs::Tuple{Functions},grid::AbstractVector,fun_names::Union{AbstractVector{String},Tuple})
+    return evaluate(sims,funs,grid,1:n_phases(sims.model),fun_names)
+end
+
 function simulate_model(model,stopping_time,n_sims,init,pth,rng::Random.AbstractRNG=Randon.default_rng())
     SFM0 = init(n_sims,rng)
     sims = simulate(model,stopping_time,SFM0,rng)
@@ -55,23 +133,28 @@ function _compute_errors(model,evaluated,pm_evaluated,err_fun,distribution_funct
     return log10(err_fun(distribution_function(model["coeffs_mapped"]),evaluated,pm_evaluated,grid,_phases))
 end
 
-function _eval_sim(boot_sample,distribution_function,grid,n_sim)
-    evaluated = distribution_function(boot_sample).(grid,(1:n_phases(boot_sample.model))')
-    pm_evaluated = zeros(N₋(boot_sample.model)+N₊(boot_sample.model))
+function sim_point_masses(sims)
+    pm_evaluated = zeros(N₋(sims.model)+N₊(sims.model))
     c = 0
-    for i in 1:n_phases(boot_sample.model)
-        if DiscretisedFluidQueues._has_left_boundary(boot_sample.model.S,i)
+    n_sim = length(sims.t)
+    for i in 1:n_phases(sims.model)
+        if DiscretisedFluidQueues._has_left_boundary(sims.model.S,i)
             c += 1
-            pm_evaluated[c] = sum(boot_sample.X[boot_sample.φ.==i]==0.0)/n_sim
+            pm_evaluated[c] = sum(sims.X[sims.φ.==i]==0.0)/n_sim
         end
     end
     c = 0
-    for i in 1:n_phases(boot_sample.model)
+    for i in 1:n_phases(sims.model)
         if DiscretisedFluidQueues._has_right_boundary(model.S,i)
             c += 1
-            pm_evaluated[c] = sum(boot_sample.X[boot_sample.φ.==i]==boot_sample.model.b)/n_sim
+            pm_evaluated[c] = sum(sims.X[boot_sample.φ.==i]==sims.model.b)/n_sim
         end
     end
+    return pm_evaluated
+end
+function _eval_sim(boot_sample,distribution_function,grid)
+    evaluated = distribution_function(boot_sample).(grid,(1:n_phases(boot_sample.model))')
+    pm_evaluated = sim_point_masses(sims)
     return evaluated, pm_evaluated
 end
 
@@ -84,7 +167,7 @@ function compute_errors_bootstrap_ci(models,sims::Simulation,distribution_functi
     for n in 1:n_boot
         idx = rand(rng,1:n_sims,n_sims)
         boot_sample = Simulation(sims.t[idx],sims.φ[idx],sims.X[idx],sims.n[idx],sims.model)
-        evaluated, pm_evaluated = _eval_sim(boot_sample,distribution_function_sim,grid,n_sims)
+        evaluated, pm_evaluated = _eval_sim(boot_sample,distribution_function_sim,grid)
         for (c_o,o) in enumerate(orders)
             for (c_m,m) in enumerate(sort([i for i in k]))
                 boots[n,c_o,c_m] = log10(err_fun(distribution_function_model(models[o][m]["coeffs_mapped"]),evaluated,pm_evaluated,grid,_phases))
@@ -315,19 +398,23 @@ end
 #     return p1, q1 
 # end
 
-function cdf_bootstrap_ci(sims,n_boot,rng)
+function cdf_bootstrap_ci(sims,n_boot,grid,_phases,p,rng)
     n_sims = length(sims.φ)
-    cdfs = Array{Function,1}(undef,n_boot)
+    cdfs = Array{Float64,3}(undef,n_boot,length(grid),length(_phases))
     for n in 1:n_boot
         idx = rand(rng,1:n_sims,n_sims)
         boot_sample = Simulation(sims.t[idx],sims.φ[idx],sims.X[idx],sims.n[idx],sims.model)
-        cdfs[n] = cdf(boot_sample)
+        cdfs[n,:,:] = cdf(boot_sample).(grid,_phases)
     end
-    function ci(x,i,p=(0.025,0.975))
-        evaluated = [cdfs[k](x,i) for k in 1:n_boot]
-        return quantile!(evaluated,p)
+    ci_lwr = Array{Float64,2}(undef,size(grid)...)
+    ci_upr = Array{Float64,2}(undef,size(grid)...)
+    for g in 1:length(grid)
+        for i in 1:length(phases)
+            ci_lwr[g,i] = quantile!(cdfs[:,g,i])
+            ci_upr[g,i] = quantile!(cdfs[:,g,i])
+        end
     end
-    return ci
+    return ci_lwr, ci_upr
 end
 
 # function bootstrap_errs_ci(sims,orders,models,n_boot,n_evals,p,rng)
