@@ -566,9 +566,9 @@ function write_models(models,pth)
             temp_path = mkpath(pth*"/data/models/order_"*string(o)*"/model_"*string(m)*"/")
             for var in keys(models[o][m])
                 try 
-                    JSON.write(temp_path*"/"*var,JSON.json(models[o][m][var]))
+                    JSON.write(temp_path*"/"*var*".json",JSON.json(models[o][m][var]))
                 catch 
-                    JSON.write(temp_path*"/"*var,JSON.json("failed to write "*var))
+                    JSON.write(temp_path*"/"*var*".json",JSON.json("failed to write "*var))
                 end
             end
         end
@@ -579,9 +579,9 @@ function write_truth(truth,pth)
     temp_path = mkpath(pth*"/data/sims/")
     for var in keys(truth)
         try 
-            JSON.write(temp_path*"/"*var,JSON.json(truth[var]))
+            JSON.write(temp_path*"/"*var*".json",JSON.json(truth[var]))
         catch 
-            JSON.write(temp_path*"/"*var,JSON.json("failed to write "*var))
+            JSON.write(temp_path*"/"*var*".json",JSON.json("failed to write "*var))
         end
     end
     return nothing 
