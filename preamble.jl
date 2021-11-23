@@ -9,17 +9,20 @@ if !occursin("DFQExamples.jl", Base.active_project())
     Pkg.instantiate()
     display(!occursin("DFQExamples.jl", Base.active_project()))
 end
-using DiscretisedFluidQueues 
-using Plots 
-using DataFrames 
+
 using CSV 
+using DiscretisedFluidQueues 
+using DataFrames 
+using Distributed
+import Distributions 
+using Plots 
 using LinearAlgebra 
 using JLD2 
+using JSON 
 using Random 
 using StableRNGs 
 using Statistics
-using Distributed
-import Distributions 
+
 
 include((@__DIR__)*"/error_metrics.jl")
 include((@__DIR__)*"/helper_functions.jl")

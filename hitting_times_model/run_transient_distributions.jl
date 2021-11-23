@@ -46,6 +46,7 @@ end
     end
 end 
 
+println("SUCCESS")
 
 ## comment out the above, and uncomment the below for a non-paralell test 
 # include("transient_distributions.jl")
