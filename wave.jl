@@ -100,9 +100,9 @@ for (func_count,init_dist_fun) in enumerate(init_distns)
 
                 if !isassigned(coeff_matrix,func_count,c_order,c_mesh)
                     dt = ((mtype==DGMesh) && (c_mesh<3)) ? (limit_str=" NoLimit ";integrate_time(d0,B,t,StableRK4(h); limiter=NoLimiter)) : (limit_str=" ";integrate_time(d0,B,t,StableRK4(h)))
-                    coeff_matrix[func_count,c_order,c_mesh] = dt
+                    coeff_matrix[func_count,c_order,c_mesh] = dt.coeffs
                 else 
-                    dt = coeff_matrix[func_count,c_order,c_mesh]
+                    dt = SFMDistribution(coeff_matrix[func_count,c_order,c_mesh],dq)
                 end
 
                 rec = (mtype==FRAPMesh) ? plt_type(dt, eval(Symbol(:normalised_closing_operator_,plt_type))) : plt_type(dt)

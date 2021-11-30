@@ -17,5 +17,6 @@ macro fullwidth_plot_defaults()
         ylabelfontsize=12,
         xtickfontsize=12,
         ytickfontsize=12,
+        size=(600, 300),
     ))
 end
