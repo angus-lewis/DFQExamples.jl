@@ -587,6 +587,9 @@ function write_truth(truth,pth)
     return nothing 
 end
 
+function read_directory_of_JSONs_to_dict(pth)
+    
+end
 # function bootstrap_errs_ci(sims,orders,models,n_boot,n_evals,p,rng)
 #     n_sims = length(sims.φ)
 #     boot_errors = Array{Any,1}(undef,n_boot)

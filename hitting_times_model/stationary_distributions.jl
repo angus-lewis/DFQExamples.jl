@@ -6,7 +6,7 @@ mkpath(pth*"data")
 mkpath(pth*"figs")
 
 include((@__DIR__)*"default_params.jl")
-
+# playing with meta programming, sorry its hard to read...
 for (c_o,o) in enumerate(orders)
     for (c_m,m) in enumerate((:dg,:order1,:qbdrap))
         @eval $(Symbol(m,"_d0",o)),$(Symbol(m,"_B",o)),$(Symbol(m,"_dq",o)) = $(Symbol(m,"_model"))($o)
