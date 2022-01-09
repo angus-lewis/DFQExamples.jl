@@ -39,7 +39,7 @@ with keys `approx_types` and values as follows:
     "dq"=>dq,
     "B"=>B,
 """
-function make_approximations(orders,approx_types,d0_map,a_map=identity)
+function make_approximations(orders,approx_types,d0_map,a_map=(d0...)->d0[1])
     models = Dict{Any,Dict{Any,Dict}}()
     for (c_o,o) in enumerate(orders)
         tmp_dict = Dict()
@@ -56,15 +56,11 @@ function make_approximations(orders,approx_types,d0_map,a_map=identity)
 
             dt = a_map(d0,B,m,transient_time,0.005,l)
 
-            the_pdf = pdf(dt)
-            the_cdf = cdf(dt)
             tmp_dict[string(m,c_m)] = Dict(
-                "pdf"=>the_pdf,
-                "cdf"=>the_cdf,
                 "coeffs_mapped"=>dt,
                 "coeffs_0"=>d0,
                 "dq"=>dq,
-                "B"=>B,
+                "B"=>B.B,
             )
         end
         models[o] = tmp_dict
