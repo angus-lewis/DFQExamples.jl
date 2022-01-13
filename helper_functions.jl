@@ -5,7 +5,7 @@ also constructs an initial condition which approximates a point mass at x=eps(),
 in phase i=1
 """
 function build_discretised_model(type::Type{<:Mesh{T}},model,hx,order) where T 
-    nodes = 0.0:hx:model.b
+    nodes = range(0.0,model.b; length=Int(round(model.b/hx))+1)
     mesh = type(nodes,order)
     dq = DiscretisedFluidQueue(model,mesh)
     B = build_full_generator(dq)
@@ -15,9 +15,9 @@ end
 
 t = StepRangeLen{Float64, Base.TwicePrecision{Float64}, Base.TwicePrecision{Float64}}
 # some functions to help buid approximations en masse
-dg_model(order) = build_discretised_model(DGMesh{t},model,1.0,order)
-order1_model(order) = build_discretised_model(DGMesh{t},model,1.0/order,1)
-qbdrap_model(order) = build_discretised_model(FRAPMesh{t},model,1.0,order)
+dg_model(order) = build_discretised_model(DGMesh{t},model,h,order)
+order1_model(order) = build_discretised_model(DGMesh{t},model,h/order,1)
+qbdrap_model(order) = build_discretised_model(FRAPMesh{t},model,h,order)
 
 """
 Build and save all of the approximations as specified by `orders` and `approx_types`.

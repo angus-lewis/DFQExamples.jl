@@ -27,9 +27,16 @@ Manifest.toml
 */.ipynb_checkpoints/*
 
 *.DS_Store
-*.json
+hitting_times_model/**/*.json
 *.svg
 hitting_times_model/absorbing_model/transient_distribution/exp/data/sim.csv
 hitting_times_model/absorbing_model/transient_distribution/point_mass/data/sim.csv
 hitting_times_model/reflecting_model/transient_distribution/exp/data/sim.csv
 hitting_times_model/reflecting_model/transient_distribution/point_mass/data/sim.csv
+
+hitting_times_model/hitting_times/data/exp/sims.csv
+hitting_times_model/hitting_times/data/point_mass/sims.csv
+
+fluidfluid_continuous/data/sims.csv
+fluidfluid_discontinuous/data/sims.csv
+
