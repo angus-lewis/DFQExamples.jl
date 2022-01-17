@@ -3,7 +3,8 @@ include("model_def.jl")
 
 include("../helper_functions.jl")
 
-orders = orders[3:3:end]
+# orders = orders[9:3:end]
+w = false
 # initial condition
 d0_map_point_mass(dq) = (interior_point_mass(5.0,3,dq).coeffs)
 
@@ -23,7 +24,7 @@ for k1 in orders
             _ffq = ffq(models[k1][k2]["dq"].mesh,Δ(models[k1][k2]["dq"],1))
             D = InOutGenerator(_ffq,0.0)
             psi = build_psi(D)
-            JSON.write(
+            w&&JSON.write(
                 (@__DIR__)*"/data/psi/order_"*string(k1)*"_model_"*string(k2)*".json",
                 JSON.json(psi),
             )
@@ -31,12 +32,12 @@ for k1 in orders
             # evaluate first-return distribution
             first_return_coeffs = zeros(size(models[k1][k2]["coeffs_0"]))
             first_return_coeffs[index(_ffq,Minus)] = 
-                transpose(models[k1][k2]["coeffs_0"][index(_ffq,Plus)])*psi
+                transpose(models[k1][k2]["coeffs_0"])*psi
             first_return_dist = SFMDistribution(first_return_coeffs,_ffq.dq)
             cdf_fun = cdf(first_return_dist)
             first_return_cdf_phase_2 = cdf_fun.(x_vals,2)
             first_return_cdf_phase_4 = cdf_fun.(x_vals,4)
-            CSV.write(
+            w&&CSV.write(
                 (@__DIR__)*"/data/first_return_cdf_approximations/order_"*string(k1)*"_model_"*string(k2)*".csv",
                 DataFrame(
                     x = x_vals,

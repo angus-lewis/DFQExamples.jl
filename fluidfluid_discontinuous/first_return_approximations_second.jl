@@ -3,9 +3,10 @@ include("model_def.jl")
 
 include("../helper_functions.jl")
 
-orders = orders[2:3:end]
+orders = orders[end]
+
 # initial condition
-d0_map_point_mass(dq) = (interior_point_mass(5.0,3,dq).coeffs)
+d0_map_point_mass(dq) = (interior_point_mass(2.0,4,dq).coeffs)
 
 # build the generators
 models = make_approximations(orders,approx_types,d0_map_point_mass,(args...)->args[1])
@@ -22,7 +23,7 @@ for k1 in orders
             # evaluate psi for all approximations
             _ffq = ffq(models[k1][k2]["dq"].mesh,Δ(models[k1][k2]["dq"],1))
             D = InOutGenerator(_ffq,0.0)
-            psi = build_psi(D)
+            psi = build_psi(D;err=9e-9)
             JSON.write(
                 (@__DIR__)*"/data/psi/order_"*string(k1)*"_model_"*string(k2)*".json",
                 JSON.json(psi),

@@ -16,10 +16,6 @@ function cdf(x::AbstractVector,data::DataFrame)
     F2 = zeros(length(x))
     F4 = zeros(length(x))
 
-    Mx2 = x2[end]
-    Mx4 = x4[end]
-    mx2 = x2[1]
-    mx4 = x4[1]
     for (c,xi) in enumerate(x)
         tmp2 = findfirst(y->y>xi,x2[c2:end])
         if !(tmp2===nothing)

@@ -3,7 +3,7 @@ include("model_def.jl")
 
 include("../helper_functions.jl")
 
-orders = orders[1:3:end]
+orders = orders[2:2:end]
 
 # initial condition
 d0_map_point_mass(dq) = (interior_point_mass(5.0,3,dq).coeffs)
