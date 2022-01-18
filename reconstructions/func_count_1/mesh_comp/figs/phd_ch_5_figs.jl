@@ -66,7 +66,7 @@ for (c,o) in enumerate(os)
     mesh = DGMesh(0.0:(1.0./o):1.0,1)
     dq = DiscretisedFluidQueue(model,mesh)
     d0 = interior_point_mass(0.5,1,dq)    
-    plot!(xs,cdf(d0).(xs,1),subplot=c,label=(c==1 ? "unif." : false),
+    plot!(xs,cdf(d0).(xs,1),subplot=c,label=(c==1 ? "Unif." : false),
         linestyle=linestyles_vec[2],
         # marker=markerstyles_vec[2],
         linewidth=2)
@@ -116,7 +116,7 @@ for (c,o) in enumerate(os)
     mesh = DGMesh(0.0:(1.0./o):1.0,1)
     dq = DiscretisedFluidQueue(model,mesh)
     d0 = interior_point_mass(0.5,1,dq)    
-    plot!(xs,pdf(d0).(xs,1),subplot=c,label=(c==1 ? "unif." : false),
+    plot!(xs,pdf(d0).(xs,1),subplot=c,label=(c==1 ? "Unif." : false),
         linestyle=linestyles_vec[2],
         # marker=markerstyles_vec[2],
         linewidth=2)

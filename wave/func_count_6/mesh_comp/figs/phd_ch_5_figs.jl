@@ -97,13 +97,13 @@ for (c,o) in enumerate(os)
     jldopen(dir*"/../../../coeffs_matrix.jld2") do f 
         coeffs = f["coeff_matrix"][fun_number,c,2]
         dt = SFMDistribution(coeffs,dq) 
-        plot!(xs,pdf(dt).(xs,1),subplot=c+4,label=(c==1 ? "unif." : false),
+        plot!(xs,pdf(dt).(xs,1),subplot=c+4,label=(c==1 ? "Unif." : false),
             linestyle=linestyles_vec[2],ylims = (-0.1,1.1),  yticks=false,
             # marker=markerstyles_vec[2],
             linewidth=2,xticks=false)
     end
     (c==1)&&plot!(subplot=c+4, yticks=(c==1 ? (0.1:0.4:1.2) : false), 
-        ylabel=(c==1 ? "unif." : false), grid=false)
+        ylabel=(c==1 ? "Unif." : false), grid=false)
 
     mesh = DGMesh(0.0:10.0,o)
     dq = DiscretisedFluidQueue(model,mesh)
@@ -149,7 +149,7 @@ plot!()
 savefig((@__DIR__)*"/pdf_formatted.pdf")
 
 @halfwidth_plot_defaults()
-L1_cell_probs_errors = DataFrame(DG = Float64[], Order_1 = Float64[], DG_limiter = Float64[], QBDRAP = Float64[])
+L1_cell_probs_errors = DataFrame(DG = Float64[], Unif = Float64[], DG_limiter = Float64[], QBDRAP = Float64[])
 # truth = zeros(10)
 # truth[5] = 1.0
 norm_cdf(x) = Distributions.cdf(Distributions.Normal(2.5,0.5),x)

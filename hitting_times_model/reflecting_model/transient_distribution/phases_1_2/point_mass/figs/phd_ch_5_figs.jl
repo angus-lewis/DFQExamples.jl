@@ -20,7 +20,7 @@ ks_data = log10.(ks_data)
 p = plot()
 linestyles_vec = [:solid,:dash,:dashdot, :dot]
 markerstyles_vec = [:false,:false,:false,:false]
-_names = ["DG"; "DG (limit)"; "Order_1"; "QBD-RAP"]
+_names = ["DG"; "DG (limit)"; "Unif"; "QBD-RAP"]
 colours = [1;3;2;4]
 for (c,col) in enumerate(names(ks_data))
     plot!(1:2:21,ks_data[:,col], ribbon=(lwr[:,c],upr[:,c]),
