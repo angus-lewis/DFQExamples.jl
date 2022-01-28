@@ -16,7 +16,9 @@ qbdrap_model(order) = build_discretised_model(FRAPMesh{t},model,1.0/3,order)
 d0_map_point_mass(dq) = (interior_point_mass(eps(),1,dq).coeffs)
 d0_map_exp(dq) = (SFMDistribution((x,i)->(i∈(1:2))*exp(-x)/(1-exp(-model.b))/2,dq).coeffs)
 
-models = make_approximations(orders,approx_types,d0_map_exp,(args...)->args[1])
+# change d0_map here to do the make_approximations for ohter initial confitions
+# remember to change write directory below too
+models = make_approximations(orders,approx_types,d0_map_point_mass,(args...)->args[1])
 
 for k1 in keys(models)
     for k2 in keys(models[k1])
@@ -26,9 +28,9 @@ for k1 in keys(models)
     end
 end
 
-pth = mkpath((@__DIR__)*"/hitting_times/data/exp")
+pth = mkpath((@__DIR__)*"/hitting_times/data/point_mass")
 
-h = 0.005
+h = 0.005/3
 t_vec = 0.0:h:10.0
 hitting_times_cdf = zeros(length(t_vec),3) 
 hitting_times_cdf[:,1] = t_vec

@@ -21,9 +21,9 @@ for (c,col) in enumerate(names(ks_data))
         marker=markerstyles_vec[c],
         linewidth=2)
 end
-plot!(xlabel="Order")
+plot!(xlabel="Dimension")
 plot!(ylabel="log₁₀ error")
-plot!(title="KS error between true CDF and reconstruction")
+plot!(title="KS error - CDF")
 plot!(legend=:outerbottomright)
 plot!()
 savefig((@__DIR__)*"/meshs_ks_error_formatted.pdf")
@@ -41,9 +41,9 @@ for (c,col) in enumerate(names(l2_pdf_data))
         marker=markerstyles_vec[c],
         linewidth=2)
 end
-plot!(xlabel="Order")
+plot!(xlabel="Dimension")
 plot!(ylabel="log₁₀ error")
-plot!(title="L² error between true PDF and reconstruction")
+plot!(title="L² error - PDF")
 plot!(legend=:outerbottomright)
 plot!()
 savefig((@__DIR__)*"/meshs_l2_pdf_error_formatted.pdf")
@@ -70,7 +70,7 @@ for (c,o) in enumerate(os)
     end
     plot!(subplot=c, yticks=(c==1 ? (0.1:0.4:1.2) : false),
         ylabel=(c==1 ? "DG" : false), grid=false, 
-        title = string("Order ",o))
+        title = string("Dim. ",o))
 
     mesh = DGMesh(0.0:(1.0./o):10.0,1)
     dq = DiscretisedFluidQueue(model,mesh)
@@ -121,7 +121,7 @@ for (c,o) in enumerate(os)
     # plot!(subplot=c, yticks=(c==1 ? (0.1:0.3:1.2) : false),
     #     ylims = (-0.1,1.1), xticks = 0.0:3:10, 
     #     ylabel=(c==1 ? "probability" : false), grid=false, 
-    #     title = string("Order ",o),
+    #     title = string("Dim. ",o),
     #     legend=:outertopright)
     plot!(legend=false)
 end
@@ -155,7 +155,7 @@ for (c_o,o) in enumerate(1:2:21)
     end
     push!(L1_cell_probs_errors,row)
 end
-
+@halfwidth_plot_defaults()
 file = (@__DIR__)*"/../data/meshs_l1_cell_"*"func_count_4"
 CSV.write(file*".csv",L1_cell_probs_errors)
 q = plot()
@@ -167,7 +167,7 @@ for (c,reconstruction) in enumerate(names(L1_cell_probs_errors))
         marker=markerstyles_vec[c],
         linewidth=2)
 end
-plot!(xlabel="Order", ylabel="log₁₀ Error", 
+plot!(xlabel="Dimension", ylabel="log₁₀ Error", 
     title="Error between cell probabilities",
     legend=:outertopright)
 savefig((@__DIR__)*"/L1_cell_probs.pdf")
@@ -213,7 +213,7 @@ savefig((@__DIR__)*"/L1_cell_probs.pdf")
 #     plot!(subplot=c, yticks=(c==1 ? (-2:2:6) : false),
 #         ylims = (-3,7.2), xticks = 0.25:0.5:0.75, 
 #         ylabel=(c==1 ? "probability" : false), grid=false, 
-#         title = string("Order ",o),
+#         title = string("Dim. ",o),
 #         legend=(0.1,0.8))
 # end
 # plot!() 

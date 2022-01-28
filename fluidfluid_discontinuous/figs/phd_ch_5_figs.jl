@@ -18,7 +18,7 @@ ks_data_upr = CSV.read((@__DIR__)*"/../data/errors/ks_error_upr.csv",DataFrame)
 p = plot()
 linestyles_vec = [:solid,:dash,:dashdot, :dot]
 markerstyles_vec = [:cross,:diamond,:circle,:dot]
-colours = [1;2;3;4]
+colours = [1;3;2;4]
 for (c,col) in enumerate(names(ks_data))
     if c!=2
         plot!(1:2:21,log10.(ks_data[:,col]), 
@@ -28,9 +28,9 @@ for (c,col) in enumerate(names(ks_data))
             linewidth=2,color=colours[c])
     end
 end
-plot!(xlabel="Order")
+plot!(xlabel="Dimension")
 plot!(ylabel="log₁₀ error")
-plot!(title="KS error between sim and approx. CDF")
+plot!(title="KS error")
 plot!(legend=(0.7,0.92))
 plot!()
 savefig((@__DIR__)*"/ks_error_formatted.pdf")
@@ -53,9 +53,9 @@ for (c,col) in enumerate(names(l1_cdf_data))
             linewidth=2,color=colours[c])
     end
 end
-plot!(xlabel="Order")
+plot!(xlabel="Dimension")
 plot!(ylabel="log₁₀ error")
-plot!(title="L¹ error between sim and approx CDF")
+plot!(title="L¹ error - CDF")
 plot!(legend=(0.7,0.92))
 plot!(ylims=(-2.5,-0.55))
 plot!()
@@ -78,9 +78,9 @@ for (c,col) in enumerate(names(l1_cell_probs))
             linewidth=2,color=colours[c])
     end
 end
-plot!(xlabel="Order")
+plot!(xlabel="Dimension")
 plot!(ylabel="log₁₀ error")
-plot!(title="L¹ error between sim and approx. cell masses")
+plot!(title="L¹ error - cell probabilities")
 plot!(legend=(0.7,0.92))
 plot!()
 savefig((@__DIR__)*"/l1_cell_probs_error_formatted.pdf")
@@ -92,7 +92,7 @@ sim_cdf = CSV.read("fluidfluid_discontinuous/data/sims_cdf_evaluated.csv",DataFr
 plot(dg_data.x,dg_data.phase_4, label="DG",color=1;linewidth=2,linestyle=linestyles_vec[1])
 plot!(dg_data.x,qbdrap_data.phase_4, label="QBD-RAP",color=4;linewidth=2,linestyle=linestyles_vec[4])
 plot!(dg_data.x,sim_cdf.phase_4, label="Sim",color=5,linewidth=2,linestyle=:dot)
-plot!(title="Approximations of the first return CDF in for phase 00")
+plot!(title="CDF of X at first return in phase 00")
 plot!(xlabel="x")
 plot!(ylabel="probability")
 plot!(legend=(0.15,0.9))

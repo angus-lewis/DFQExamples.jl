@@ -33,6 +33,7 @@ hitting_times_model/absorbing_model/transient_distribution/exp/data/sim.csv
 hitting_times_model/absorbing_model/transient_distribution/point_mass/data/sim.csv
 hitting_times_model/reflecting_model/transient_distribution/exp/data/sim.csv
 hitting_times_model/reflecting_model/transient_distribution/point_mass/data/sim.csv
+hitting_times_model/reflecting_model/transient_distribution/point_mass/datat2/sims.csv
 
 hitting_times_model/hitting_times/data/exp/sims.csv
 hitting_times_model/hitting_times/data/point_mass/sims.csv

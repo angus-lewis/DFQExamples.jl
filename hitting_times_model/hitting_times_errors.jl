@@ -3,16 +3,6 @@ include((@__DIR__)*"/../preamble.jl")
 include("absorbing_model/model_def.jl")
 include("default_params.jl")
 
-function ht_cdf(sims)
-    n_sims=length(sims.t)
-    function F(x,i)
-        i_idx = sims.φ.==i
-        Fxi = sum(sims.t[i_idx].<=x)/n_sims
-        return Fxi
-    end
-    return F
-end
-
 tvec = CSV.read("hitting_times_model/hitting_times/data/point_mass/order_1_model_dg1.csv",DataFrame).t
 
 pth = mkpath("hitting_times_model/hitting_times/data/errors")
@@ -22,13 +12,7 @@ for ic_string in ["point_mass","exp"]
     ks_error_row = zeros(4)
     l1_error_row = zeros(4)
 
-    sim_data = CSV.read("hitting_times_model/hitting_times/data/"*ic_string*"/sims.csv",DataFrame)
-
-    sim_cdf = DataFrame(
-        t=tvec,
-        phase_1=ht_cdf(sim_data).(tvec,1),
-        phase_2=ht_cdf(sim_data).(tvec,2),
-    )
+    sim_cdf = CSV.read("hitting_times_model/hitting_times/data/"*ic_string*"/sims_cdf_evaluated.csv",DataFrame)
     for order in 1:2:21
         for (c,model_string) in enumerate(["dg1","dg2","order13","qbdrap4"])
             approx_data = CSV.read("hitting_times_model/hitting_times/data/"*

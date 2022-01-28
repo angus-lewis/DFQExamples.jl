@@ -1,3 +1,5 @@
+using Plots  
+plotlyjs() 
 macro halfwidth_plot_defaults()
     return :(default(
         legendfontsize=18,

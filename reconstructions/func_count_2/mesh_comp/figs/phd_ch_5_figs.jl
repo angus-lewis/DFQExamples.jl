@@ -12,15 +12,16 @@ ks_data = CSV.read((@__DIR__)*"/../data/meshs_ks_func_count_2.csv",DataFrame)
 p = plot()
 linestyles_vec = [:solid,:dash,:dashdot]
 markerstyles_vec = [:cross,:diamond,:circle]
+colours = [1;2;4]
 for (c,col) in enumerate(names(ks_data))
     plot!(1:2:21,ks_data[:,col],
         label=col,linestyle=linestyles_vec[c],
-        marker=markerstyles_vec[c],
+        marker=markerstyles_vec[c],color=colours[c],
         linewidth=2)
 end
-plot!(xlabel="Order")
+plot!(xlabel="Dimension")
 plot!(ylabel="log₁₀ error")
-plot!(title="KS error between true CDF and reconstruction")
+plot!(title="KS error")
 plot!(legend=(0.7,0.9))
 plot!()
 savefig((@__DIR__)*"/meshs_ks_error_formatted.pdf")
@@ -35,12 +36,12 @@ markerstyles_vec = [:cross,:diamond,:circle]
 for (c,col) in enumerate(names(l2_pdf_data))
     plot!(1:2:21,l2_pdf_data[:,col],
         label=col,linestyle=linestyles_vec[c],
-        marker=markerstyles_vec[c],
+        marker=markerstyles_vec[c],color=colours[c],
         linewidth=2)
 end
-plot!(xlabel="Order")
+plot!(xlabel="Dimension")
 plot!(ylabel="log₁₀ error")
-plot!(title="L² error between true CDF and reconstruction")
+plot!(title="L² error - CDF")
 plot!(legend=(0.8,0.9))
 plot!()
 savefig((@__DIR__)*"/meshs_l2_pdf_error_formatted.pdf")
@@ -88,7 +89,7 @@ for (c,o) in enumerate(os)
     plot!(subplot=c, yticks=(c==1 ? (0:0.2:1.2) : false),
         ylims = (-0.1,1.1), xticks = 0.25:0.5:0.75, 
         ylabel=(c==1 ? "probability" : false), grid=false, 
-        title = string("Order ",o),
+        title = string("Dim. ",o),
         legend=(0.93,0.4))
 end
 plot!() 
@@ -138,7 +139,7 @@ for (c,o) in enumerate(os)
     plot!(subplot=c, yticks=(c==1 ? (-2:2:6) : false),
         ylims = (-3,7.2), xticks = 0.25:0.5:0.75, 
         ylabel=(c==1 ? "probability" : false), grid=false, 
-        title = string("Order ",o),
+        title = string("Dim. ",o),
         legend=(0.1,0.8))
 end
 plot!() 

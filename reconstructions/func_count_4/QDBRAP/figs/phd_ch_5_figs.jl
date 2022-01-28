@@ -19,9 +19,9 @@ for (c,col) in enumerate(names(ks_data))
         marker=markerstyles_vec[c],
         linewidth=2)
 end
-plot!(xlabel="Order")
+plot!(xlabel="Dimension")
 plot!(ylabel="log₁₀ error")
-plot!(title="KS error between true CDF and reconstruction")
+plot!(title="KS error")
 plot!(legend=(0.7,0.9))
 plot!()
 savefig((@__DIR__)*"/ks_error_formatted.pdf")
@@ -39,9 +39,9 @@ for (c,col) in enumerate(names(l2_pdf_data))
         marker=markerstyles_vec[c],
         linewidth=2)
 end
-plot!(xlabel="Order")
+plot!(xlabel="Dimension")
 plot!(ylabel="log₁₀ error")
-plot!(title="L² error between true PDF and reconstruction")
+plot!(title="L² error - PDF")
 plot!(legend=(0.7,0.9))
 plot!()
 savefig((@__DIR__)*"/l2_pdf_error_formatted.pdf")
@@ -73,7 +73,7 @@ for (c,o) in enumerate(os)
     plot!(subplot=c, yticks=(c==1 ? (0:0.2:1.2) : false),
         ylims = (0.4,1.25), xticks = 0.25:0.5:0.75, 
         ylabel=(c==1 ? "density" : false), grid=false, 
-        title = string("Order ",o),
+        title = string("Dim. ",o),
         legend=(0.825,0.3))
 end
 plot!() 

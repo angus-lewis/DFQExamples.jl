@@ -3,7 +3,6 @@ using CSV, DataFrames
 function rerun_all(dir,filename_to_run)
     for (root, dirs, files) in walkdir(dir)
         for file in files
-            @show (file==filename_to_run)
             if (file==filename_to_run)
                 fpath = joinpath(root,file)
                 try 

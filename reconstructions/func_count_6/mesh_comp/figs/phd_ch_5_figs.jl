@@ -12,15 +12,17 @@ ks_data = CSV.read((@__DIR__)*"/../data/meshs_ks_func_count_6.csv",DataFrame)
 p = plot()
 linestyles_vec = [:solid,:dash,:dashdot]
 markerstyles_vec = [:cross,:diamond,:circle]
+colours = [1;2;4]
+
 for (c,col) in enumerate(names(ks_data))
     plot!(1:2:21,ks_data[:,col],
         label=col,linestyle=linestyles_vec[c],
-        marker=markerstyles_vec[c],
+        marker=markerstyles_vec[c],color=colours[c],
         linewidth=2)
 end
-plot!(xlabel="Order")
+plot!(xlabel="Dimension")
 plot!(ylabel="log₁₀ error")
-plot!(title="KS error between true CDF and reconstruction")
+plot!(title="KS error")
 plot!(legend=(0.7,0.65))
 plot!()
 savefig((@__DIR__)*"/meshs_ks_error_formatted.pdf")
@@ -35,12 +37,12 @@ markerstyles_vec = [:cross,:diamond,:circle]
 for (c,col) in enumerate(names(l2_pdf_data))
     plot!(1:2:21,l2_pdf_data[:,col],
         label=col,linestyle=linestyles_vec[c],
-        marker=markerstyles_vec[c],
+        marker=markerstyles_vec[c],color=colours[c],
         linewidth=2)
 end
-plot!(xlabel="Order")
+plot!(xlabel="Dimension")
 plot!(ylabel="log₁₀ error")
-plot!(title="L² error between true CDF and reconstruction")
+plot!(title="L² error - CDF")
 plot!(legend=(0.7,0.65))
 plot!(yticks=-12:3:0)
 plot!()
