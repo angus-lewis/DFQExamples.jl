@@ -70,10 +70,10 @@ jldopen("./wave/coeffs_matrix.jld2","r") do f
     global coeff_matrix=f["coeff_matrix"]
 end
 for (func_count,init_dist_fun) in enumerate(init_distns)
-    if func_count==6
+    if func_count==4
         pth = mkpath((@__FILE__)[1:end-3]*"/func_count_"*string(func_count)*"/mesh_comp")
-        mkpath(pth*"/data")
-        mkpath(pth*"/figs")
+        mkpath(pth*"/data2")
+        mkpath(pth*"/figs2")
         
         L1_cdf_errors = DataFrame(DG = Float64[], Order_1 = Float64[], DG_limiter = Float64[], QBDRAP = Float64[])
         ks_errors = DataFrame(DG = Float64[], Order_1 = Float64[], DG_limiter = Float64[], QBDRAP = Float64[])
@@ -184,10 +184,10 @@ for (func_count,init_dist_fun) in enumerate(init_distns)
             end
             # display(p)
             # display(pth)
-            savefig(p,pth*"/figs/mesh_"*string(plt_type)*"_func_count_"*string(func_count)*".svg")
+            savefig(p,pth*"/figs2/mesh_"*string(plt_type)*"_func_count_"*string(func_count)*".svg")
         end
         # #display(L1_cdf_errors)
-        file = pth*"/data/meshs_l1_cdf_"*"func_count_"*string(func_count)
+        file = pth*"/data2/meshs_l1_cdf_"*"func_count_"*string(func_count)
         CSV.write(file*".csv",L1_cdf_errors)
         q = plot()
         for reconstruction in names(L1_cdf_errors)
@@ -198,11 +198,11 @@ for (func_count,init_dist_fun) in enumerate(init_distns)
             legend=:outertopright)
         #display(q)
         # #display(pth)
-        file = pth*"/figs/meshs_l1_cdf_"*"func_count_"*string(func_count)
+        file = pth*"/figs2/meshs_l1_cdf_"*"func_count_"*string(func_count)
         savefig(q,file*".svg")
 
         # #display(ks_errors)
-        file = pth*"/data/meshs_ks_"*"func_count_"*string(func_count)
+        file = pth*"/data2/meshs_ks_"*"func_count_"*string(func_count)
         CSV.write(file*".csv",ks_errors)
         q = plot()
         for reconstruction in names(ks_errors)
@@ -212,11 +212,11 @@ for (func_count,init_dist_fun) in enumerate(init_distns)
             title="KS error between the true CDF and approximations",
             legend=:outertopright)
         #display(q)
-        file = pth*"/figs/meshs_ks_"*"func_count_"*string(func_count)
+        file = pth*"/figs2/meshs_ks_"*"func_count_"*string(func_count)
         savefig(q,file*".svg")
 
         # #display(L1_pdf_errors)
-        file = pth*"/data/meshs_l1_pdf_"*"func_count_"*string(func_count)
+        file = pth*"/data2/meshs_l1_pdf_"*"func_count_"*string(func_count)
         CSV.write(file*".csv",L1_pdf_errors)
         q = plot()
         for reconstruction in names(L1_pdf_errors)
@@ -226,11 +226,11 @@ for (func_count,init_dist_fun) in enumerate(init_distns)
             title="L¹ error between the true PDF and approximations",
             legend=:outertopright)
         #display(q)
-        file = pth*"/figs/meshs_l1_pdf_"*"func_count_"*string(func_count)
+        file = pth*"/figs2/meshs_l1_pdf_"*"func_count_"*string(func_count)
         savefig(q,file*".svg")
 
         # #display(L2_pdf_errors)
-        file = pth*"/data/meshs_l2_pdf_"*"func_count_"*string(func_count)
+        file = pth*"/data2/meshs_l2_pdf_"*"func_count_"*string(func_count)
         CSV.write(file*".csv",L2_pdf_errors)
         q = plot()
         for reconstruction in names(L2_pdf_errors)
@@ -240,7 +240,7 @@ for (func_count,init_dist_fun) in enumerate(init_distns)
             title="L² error between the true PDF and approximations",
             legend=:outertopright)
         #display(q)
-        file = pth*"/figs/meshs_l2_pdf_"*"func_count_"*string(func_count)
+        file = pth*"/figs2/meshs_l2_pdf_"*"func_count_"*string(func_count)
         savefig(q,file*".svg")
     end
 end

@@ -9,43 +9,46 @@ include("/Users/anguslewis/Documents/SFFMProject/DFQExamples.jl/error_metrics.jl
 @halfwidth_plot_defaults()
 
 plotlyjs()
-
+function p()
 ks_data = CSV.read((@__DIR__)*"/../data/meshs_ks_func_count_4.csv",DataFrame)
 
-p = plot()
+plot()
 linestyles_vec = [:solid,:dash,:dashdot, :dot]
 markerstyles_vec = [:cross,:diamond,:circle,:dot]
 for (c,col) in enumerate(names(ks_data))
-    plot!(1:2:21,ks_data[:,col],
+    plot!(log10.(1:2:21),ks_data[:,col],
         label=col,linestyle=linestyles_vec[c],
         marker=markerstyles_vec[c],
         linewidth=2)
 end
 plot!(xlabel="Dimension")
-plot!(ylabel="log₁₀ error")
+plot!(ylabel="Error"); error_ticks!(plot!())
 plot!(title="KS error - CDF")
 plot!(legend=:outerbottomright)
 plot!()
+@add_lines!(ks_data,("Unif","QBDRAP"),@__DIR__)
 savefig((@__DIR__)*"/meshs_ks_error_formatted.pdf")
+end
+p()
 
-
-
+function p()
 l2_pdf_data = CSV.read((@__DIR__)*"/../data/meshs_l2_pdf_func_count_4.csv",DataFrame)
 
-p = plot()
+plot()
 linestyles_vec = [:solid,:dash,:dashdot, :dot]
 markerstyles_vec = [:cross,:diamond,:circle,:cross]
 for (c,col) in enumerate(names(l2_pdf_data))
-    plot!(1:2:21,l2_pdf_data[:,col],
+    plot!(log10.(1:2:21),l2_pdf_data[:,col],
         label=col,linestyle=linestyles_vec[c],
         marker=markerstyles_vec[c],
         linewidth=2)
 end
 plot!(xlabel="Dimension")
-plot!(ylabel="log₁₀ error")
+plot!(ylabel="Error"); error_ticks!(plot!())
 plot!(title="L² error - PDF")
 plot!(legend=:outerbottomright)
 plot!()
+@add_lines!(l2_pdf_data,("Unif","QBDRAP"),@__DIR__)
 savefig((@__DIR__)*"/meshs_l2_pdf_error_formatted.pdf")
 
 @fullwidth_plot_defaults()
@@ -127,7 +130,10 @@ for (c,o) in enumerate(os)
 end
 plot!() 
 savefig((@__DIR__)*"/pdfs_formatted.pdf")
+end
+p()
 
+function p()
 L1_cell_probs_errors = DataFrame(DG = Float64[], Unif = Float64[], DG_limiter = Float64[], QBDRAP = Float64[])
 truth = zeros(10)
 truth[5] = 1.0
@@ -135,7 +141,7 @@ truth_pm = zeros(3)
 for (c_o,o) in enumerate(1:2:21)
     row = zeros(4)
     for (c_m,m) in enumerate(names(L1_cell_probs_errors))
-        jldopen(dir*"/../../../coeffs_matrix.jld2") do f 
+        jldopen((@__DIR__)*"/../../../coeffs_matrix.jld2") do f 
             model = BoundedFluidQueue(fill(0.0,2,2),[1.0; 0.0],10.0)
     
             mesh = (c_m<4) ? DGMesh(0.0:10.0,o) : FRAPMesh(0.0:10.0,o)
@@ -149,7 +155,6 @@ for (c_o,o) in enumerate(1:2:21)
             approx = sum(cell_probs(dt).(x_vals,(1:2)'),dims=2)
             approx_pm = [coeffs[1:N₋(model)];coeffs[end-N₊(model)+1:end]]
 
-            (o==3)&&display(approx)
             row[c_m] = log10(sum(abs.(approx-truth)) + sum(abs.(approx_pm-truth_pm)))
         end
     end
@@ -162,16 +167,19 @@ q = plot()
 linestyles_vec = [:solid,:dash,:dashdot, :dot]
 markerstyles_vec = [:cross,:diamond,:circle,:dot]
 for (c,reconstruction) in enumerate(names(L1_cell_probs_errors))
-    plot!(1:2:21,L1_cell_probs_errors[:,reconstruction],label=reconstruction,
+    plot!(log10.(1:2:21),L1_cell_probs_errors[:,reconstruction],label=reconstruction,
         linestyle=linestyles_vec[c],
         marker=markerstyles_vec[c],
         linewidth=2)
 end
-plot!(xlabel="Dimension", ylabel="log₁₀ Error", 
+plot!(xlabel="Dimension", ylabel="Error", 
     title="Error between cell probabilities",
     legend=:outertopright)
+error_ticks!(plot!())
+@add_lines!(L1_cell_probs_errors,("Unif","QBDRAP"),@__DIR__)
 savefig((@__DIR__)*"/L1_cell_probs.pdf")
-
+end
+p()
 # os = 1:2:7
 # plot(layout=(1,length(os)))
 # linestyles_vec = [:solid,:dash,:dashdot]

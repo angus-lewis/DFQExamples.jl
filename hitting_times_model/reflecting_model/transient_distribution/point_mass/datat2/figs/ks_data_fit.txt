@@ -1,0 +1,44 @@
+Fit log(KS) = β₀ + β₁log(N), for method DG
+LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, LinearAlgebra.CholeskyPivoted{Float64, Matrix{Float64}}}}:
+
+Coefficients:
+────────────────────────────────────────────────────────────────────
+         Coef.  Std. Error        t  Pr(>|t|)   Lower 95%  Upper 95%
+────────────────────────────────────────────────────────────────────
+x1  -1.17807    0.00311048  -378.74    <1e-13  -1.18568    -1.17046
+x2  -0.0723193  0.00275054   -26.29    <1e-06  -0.0790496  -0.065589
+────────────────────────────────────────────────────────────────────
+
+Fit log(KS) = β₀ + β₁log(N), for method DG_limit
+LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, LinearAlgebra.CholeskyPivoted{Float64, Matrix{Float64}}}}:
+
+Coefficients:
+───────────────────────────────────────────────────────────────────────
+          Coef.  Std. Error        t  Pr(>|t|)   Lower 95%    Upper 95%
+───────────────────────────────────────────────────────────────────────
+x1  -0.846106    0.00379978  -222.67    <1e-12  -0.855404   -0.836808
+x2  -0.00679885  0.00336007    -2.02    0.0895  -0.0150206   0.00142295
+───────────────────────────────────────────────────────────────────────
+
+Fit log(KS) = β₀ + β₁log(N), for method Order_1
+LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, LinearAlgebra.CholeskyPivoted{Float64, Matrix{Float64}}}}:
+
+Coefficients:
+─────────────────────────────────────────────────────────────────
+        Coef.  Std. Error       t  Pr(>|t|)  Lower 95%  Upper 95%
+─────────────────────────────────────────────────────────────────
+x1  -0.711518  0.00814726  -87.33    <1e-09  -0.731453  -0.691582
+x2  -0.293351  0.00720446  -40.72    <1e-07  -0.31098   -0.275722
+─────────────────────────────────────────────────────────────────
+
+Fit log(KS) = β₀ + β₁log(N), for method QBDRAP
+LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, LinearAlgebra.CholeskyPivoted{Float64, Matrix{Float64}}}}:
+
+Coefficients:
+─────────────────────────────────────────────────────────────────
+        Coef.  Std. Error       t  Pr(>|t|)  Lower 95%  Upper 95%
+─────────────────────────────────────────────────────────────────
+x1  -0.784965   0.017117   -45.86    <1e-08  -0.826848  -0.743081
+x2  -0.332832   0.0151363  -21.99    <1e-06  -0.369869  -0.295795
+─────────────────────────────────────────────────────────────────
+

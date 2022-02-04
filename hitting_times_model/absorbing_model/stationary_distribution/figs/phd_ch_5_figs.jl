@@ -10,10 +10,10 @@ include("/Users/anguslewis/Documents/SFFMProject/DFQExamples.jl/error_metrics.jl
 @halfwidth_plot_defaults()
 
 plotlyjs()
-
+function p()
 ks_data = CSV.read((@__DIR__)*"/../data/ks_errors.csv",DataFrame)
 
-p = plot()
+plot()
 linestyles_vec = [:solid,:dash,:dashdot, :dot]
 markerstyles_vec = [:cross,:diamond,:circle,:dot]
 colours = [1;2;4]
@@ -24,17 +24,20 @@ for (c,col) in enumerate(names(ks_data))
         linewidth=2,color=colours[c])
 end
 plot!(xlabel="Dimension")
-plot!(ylabel="log₁₀ error")
+plot!(ylabel="Error")
+error_ticks!(plot!())
 plot!(title="KS error")
 plot!(legend=:outerbottomright)
 plot!()
 savefig((@__DIR__)*"/ks_error_formatted.pdf")
+end 
+p()
 
-
-
+function p()
 l2_pdf_data = CSV.read((@__DIR__)*"/../data/l2_pdf_errors.csv",DataFrame)
+colours = [1;2;4]
 
-p = plot()
+plot()
 linestyles_vec = [:solid,:dash,:dashdot, :dot]
 markerstyles_vec = [:cross,:diamond,:circle,:cross]
 for (c,col) in enumerate(names(l2_pdf_data))
@@ -49,11 +52,14 @@ plot!(title="L² error - PDF")
 plot!(legend=:outerbottomright)
 plot!()
 savefig((@__DIR__)*"/l2_pdf_error_formatted.pdf")
+end 
+p()
 
-
+function p()
 l1_cdf_data = CSV.read((@__DIR__)*"/../data/l1_cdf_errors.csv",DataFrame)
 @halfwidth_plot_defaults()
-p = plot()
+colours = [1;2;4]
+plot()
 linestyles_vec = [:solid,:dash,:dashdot, :dot]
 markerstyles_vec = [:cross,:diamond,:circle,:cross]
 for (c,col) in enumerate(names(l1_cdf_data))
@@ -63,12 +69,14 @@ for (c,col) in enumerate(names(l1_cdf_data))
         linewidth=2,color=colours[c])
 end
 plot!(xlabel="Dimension")
-plot!(ylabel="log₁₀ error")
+plot!(ylabel="Error")
+error_ticks!(plot!())
 plot!(title="L¹ error - CDF")
 plot!(legend=:outerbottomright)
 plot!()
 savefig((@__DIR__)*"/l1_cdf_error_formatted.pdf")
-
+end 
+p()
 # @fullwidth_plot_defaults()
 # dir = @__DIR__()
 # os = 1:2:7

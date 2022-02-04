@@ -1,0 +1,44 @@
+Fit log(KS) = β₀ + β₁log(N), for method DG
+LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, LinearAlgebra.CholeskyPivoted{Float64, Matrix{Float64}}}}:
+
+Coefficients:
+───────────────────────────────────────────────────────────────────────────
+          Coef.  Std. Error           t  Pr(>|t|)    Lower 95%    Upper 95%
+───────────────────────────────────────────────────────────────────────────
+x1  -3.51538     9.23404e-6  -380698.38    <1e-31  -3.51541     -3.51536
+x2  -1.80521e-5  8.16548e-6       -2.21    0.0691  -3.80323e-5   1.92809e-6
+───────────────────────────────────────────────────────────────────────────
+
+Fit log(KS) = β₀ + β₁log(N), for method Unif
+LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, LinearAlgebra.CholeskyPivoted{Float64, Matrix{Float64}}}}:
+
+Coefficients:
+────────────────────────────────────────────────────────────────────
+         Coef.  Std. Error       t  Pr(>|t|)   Lower 95%   Upper 95%
+────────────────────────────────────────────────────────────────────
+x1   0.0238833   0.0275447    0.87    0.4192  -0.0435163   0.0912828
+x2  -1.12473     0.0243573  -46.18    <1e-08  -1.18433    -1.06513
+────────────────────────────────────────────────────────────────────
+
+Fit log(KS) = β₀ + β₁log(N), for method DG_limiter
+LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, LinearAlgebra.CholeskyPivoted{Float64, Matrix{Float64}}}}:
+
+Coefficients:
+────────────────────────────────────────────────────────────────────────
+          Coef.  Std. Error        t  Pr(>|t|)    Lower 95%    Upper 95%
+────────────────────────────────────────────────────────────────────────
+x1  -0.542333    0.00131976  -410.93    <1e-13  -0.545562    -0.539103
+x2   0.00653198  0.00116704     5.60    0.0014   0.00367633   0.00938762
+────────────────────────────────────────────────────────────────────────
+
+Fit log(KS) = β₀ + β₁log(N), for method QBDRAP
+LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, LinearAlgebra.CholeskyPivoted{Float64, Matrix{Float64}}}}:
+
+Coefficients:
+──────────────────────────────────────────────────────────────────
+        Coef.  Std. Error        t  Pr(>|t|)  Lower 95%  Upper 95%
+──────────────────────────────────────────────────────────────────
+x1   0.820898   0.0213521    38.45    <1e-07   0.768651   0.873145
+x2  -2.73758    0.0188813  -144.99    <1e-11  -2.78378   -2.69138
+──────────────────────────────────────────────────────────────────
+

@@ -1,0 +1,33 @@
+Fit log(KS) = β₀ + β₁log(N), for method DG
+LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, LinearAlgebra.CholeskyPivoted{Float64, Matrix{Float64}}}}:
+
+Coefficients:
+───────────────────────────────────────────────────────────────────────────────────────
+           Coef.   Std. Error                    t  Pr(>|t|)    Lower 95%     Upper 95%
+───────────────────────────────────────────────────────────────────────────────────────
+x1  -5.14854      9.3898e-15   -548311318134230.81    <1e-86  -5.14854     -5.14854
+x2  -2.11037e-14  8.30322e-15                -2.54    0.0440  -4.1421e-14  -7.86464e-16
+───────────────────────────────────────────────────────────────────────────────────────
+
+Fit log(KS) = β₀ + β₁log(N), for method Unif
+LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, LinearAlgebra.CholeskyPivoted{Float64, Matrix{Float64}}}}:
+
+Coefficients:
+────────────────────────────────────────────────────────────────
+       Coef.  Std. Error       t  Pr(>|t|)  Lower 95%  Upper 95%
+────────────────────────────────────────────────────────────────
+x1  -2.91823   0.0338525  -86.20    <1e-09   -3.00107   -2.8354
+x2  -1.42088   0.0299351  -47.47    <1e-08   -1.49413   -1.34763
+────────────────────────────────────────────────────────────────
+
+Fit log(KS) = β₀ + β₁log(N), for method QBDRAP
+LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, LinearAlgebra.CholeskyPivoted{Float64, Matrix{Float64}}}}:
+
+Coefficients:
+────────────────────────────────────────────────────────────────
+       Coef.  Std. Error       t  Pr(>|t|)  Lower 95%  Upper 95%
+────────────────────────────────────────────────────────────────
+x1  -3.4958     0.166878  -20.95    <1e-06   -3.90413   -3.08746
+x2  -1.24128    0.147567   -8.41    0.0002   -1.60237   -0.8802
+────────────────────────────────────────────────────────────────
+

@@ -10,51 +10,66 @@ include("/Users/anguslewis/Documents/SFFMProject/DFQExamples.jl/error_metrics.jl
 @halfwidth_plot_defaults()
 
 plotlyjs()
+
 ic = "point_mass"
+function p()
 ks_data = CSV.read((@__DIR__)*"/../../data/errors/ks_"*ic*".csv",DataFrame)
 ks_data_lwr = CSV.read((@__DIR__)*"/../../data/errors/ks_lwr_"*ic*".csv",DataFrame)
 ks_data_upr = CSV.read((@__DIR__)*"/../../data/errors/ks_upr_"*ic*".csv",DataFrame)
 
-p = plot()
+plot()
 linestyles_vec = [:solid,:dash,:dashdot, :dot]
 markerstyles_vec = [:cross,:diamond,:circle,:dot]
 colours = [1;3;2;4]
 for (c,col) in enumerate(names(ks_data))
-    plot!(1:2:21,log10.(ks_data[:,col]), 
+    plot!(log10.(1:2:21),log10.(ks_data[:,col]), 
         ribbon=(log10.(ks_data[:,col])-log10.(ks_data_lwr[:,col]),log10.(ks_data_upr[:,col])-log10.(ks_data[:,col])),
         label=col,linestyle=linestyles_vec[c],
         # marker=markerstyles_vec[c],
         linewidth=2,color=colours[c])
 end
 plot!(xlabel="Dimension")
-plot!(ylabel="log₁₀ error")
+plot!(ylabel="Error"); error_ticks!(plot!())
 plot!(title="KS error")
 plot!(legend=:outerbottomright)
 plot!()
+@add_lines!(ks_data,("Unif","QBDRAP"),@__DIR__)
 savefig((@__DIR__)*"/ks_error_formatted.pdf")
+end
+p()
 
 
-
+function p()
 l1_cdf_data = CSV.read((@__DIR__)*"/../../data/errors/l1_"*ic*".csv",DataFrame)
 l1_cdf_data_lwr = CSV.read((@__DIR__)*"/../../data/errors/l1_lwr_"*ic*".csv",DataFrame)
 l1_cdf_data_upr = CSV.read((@__DIR__)*"/../../data/errors/l1_upr_"*ic*".csv",DataFrame)
 
-p = plot()
+plot()
 linestyles_vec = [:solid,:dash,:dashdot, :dot]
 markerstyles_vec = [:cross,:diamond,:circle,:cross]
+colours = [1;3;2;4]
+
 for (c,col) in enumerate(names(l1_cdf_data))
-    plot!(1:2:21,log10.(l1_cdf_data[:,col]),
+    plot!(log10.(1:2:21),log10.(l1_cdf_data[:,col]),
         ribbon=(log10.(l1_cdf_data[:,col])-log10.(l1_cdf_data_lwr[:,col]),log10.(l1_cdf_data_upr[:,col])-log10.(l1_cdf_data[:,col])),
         label=col,linestyle=linestyles_vec[c],
         # marker=markerstyles_vec[c],
         linewidth=2,color=colours[c])
 end
 plot!(xlabel="Dimension")
-plot!(ylabel="log₁₀ error")
+plot!(ylabel="Error"); error_ticks!(plot!())
 plot!(title="L¹ error - CDF")
 plot!(legend=:outerbottomright)
 plot!()
+@add_lines!(l1_cdf_data,("Unif","QBDRAP"),@__DIR__)
+
 savefig((@__DIR__)*"/l1_cdf_error_formatted.pdf")
+end 
+p()
+
+
+function p()
+colours = [1;3;2;4]
 
 @fullwidth_plot_defaults()
 sim_data = CSV.read((@__DIR__)*"/../../data/point_mass/sims.csv",DataFrame)
@@ -72,3 +87,5 @@ plot!(title="First hitting time CDF")
 plot!(legend=(0.2,0.9))
 savefig((@__DIR__)*"/cdf_order21DG_and_sims.pdf")
 
+end
+p()

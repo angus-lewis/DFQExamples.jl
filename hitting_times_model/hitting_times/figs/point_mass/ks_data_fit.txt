@@ -1,0 +1,44 @@
+Fit log(KS) = β₀ + β₁log(N), for method DG
+LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, LinearAlgebra.CholeskyPivoted{Float64, Matrix{Float64}}}}:
+
+Coefficients:
+────────────────────────────────────────────────────────────────────
+         Coef.  Std. Error        t  Pr(>|t|)   Lower 95%  Upper 95%
+────────────────────────────────────────────────────────────────────
+x1  -0.697845   0.00241218  -289.30    <1e-12  -0.703748   -0.691943
+x2  -0.0462013  0.00213304   -21.66    <1e-06  -0.0514207  -0.040982
+────────────────────────────────────────────────────────────────────
+
+Fit log(KS) = β₀ + β₁log(N), for method DG_limit
+LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, LinearAlgebra.CholeskyPivoted{Float64, Matrix{Float64}}}}:
+
+Coefficients:
+────────────────────────────────────────────────────────────────────────────
+           Coef.   Std. Error         t  Pr(>|t|)     Lower 95%    Upper 95%
+────────────────────────────────────────────────────────────────────────────
+x1  -0.488508     0.000208558  -2342.31    <1e-18  -0.489018     -0.487998
+x2   0.000596901  0.000184424      3.24    0.0178   0.000145633   0.00104817
+────────────────────────────────────────────────────────────────────────────
+
+Fit log(KS) = β₀ + β₁log(N), for method Order_1
+LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, LinearAlgebra.CholeskyPivoted{Float64, Matrix{Float64}}}}:
+
+Coefficients:
+──────────────────────────────────────────────────────────────────
+        Coef.  Std. Error        t  Pr(>|t|)  Lower 95%  Upper 95%
+──────────────────────────────────────────────────────────────────
+x1  -0.547413  0.00358842  -152.55    <1e-11  -0.556193  -0.538632
+x2  -0.114064  0.00317317   -35.95    <1e-07  -0.121828  -0.106299
+──────────────────────────────────────────────────────────────────
+
+Fit log(KS) = β₀ + β₁log(N), for method QBDRAP
+LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, LinearAlgebra.CholeskyPivoted{Float64, Matrix{Float64}}}}:
+
+Coefficients:
+──────────────────────────────────────────────────────────────────
+        Coef.  Std. Error       t  Pr(>|t|)  Lower 95%   Upper 95%
+──────────────────────────────────────────────────────────────────
+x1  -0.624928  0.00789061  -79.20    <1e-09  -0.644236  -0.60562
+x2  -0.100049  0.00697752  -14.34    <1e-05  -0.117122  -0.0829752
+──────────────────────────────────────────────────────────────────
+

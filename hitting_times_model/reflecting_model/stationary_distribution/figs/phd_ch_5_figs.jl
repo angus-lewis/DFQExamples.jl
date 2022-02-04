@@ -10,64 +10,77 @@ include("/Users/anguslewis/Documents/SFFMProject/DFQExamples.jl/error_metrics.jl
 @halfwidth_plot_defaults()
 
 plotlyjs()
-
+function p()
 ks_data = CSV.read((@__DIR__)*"/../data/ks_errors.csv",DataFrame)
 
-p = plot()
+plot()
 linestyles_vec = [:solid,:dash,:dashdot, :dot]
 markerstyles_vec = [:cross,:diamond,:circle,:dot]
 colours = [1;2;4]
 for (c,col) in enumerate(names(ks_data))
-    plot!(1:2:21,ks_data[:,col],
+    plot!(log10.(1:2:21),ks_data[:,col],
         label=col,linestyle=linestyles_vec[c],
         marker=markerstyles_vec[c],
         linewidth=2,color=colours[c])
 end
 plot!(xlabel="Dimension")
-plot!(ylabel="log₁₀ error")
+plot!(ylabel="Error"); error_ticks!(plot!())
 plot!(title="KS error")
 plot!(legend=:outerbottomright)
 plot!()
+@add_lines!(ks_data,("Unif","QBDRAP"),@__DIR__)
+
 savefig((@__DIR__)*"/ks_error_formatted.pdf")
+end
+p()
 
-
-
+function p()
 l2_pdf_data = CSV.read((@__DIR__)*"/../data/l2_pdf_errors.csv",DataFrame)
+colours = [1;2;4]
 
-p = plot()
+plot()
 linestyles_vec = [:solid,:dash,:dashdot, :dot]
 markerstyles_vec = [:cross,:diamond,:circle,:cross]
 for (c,col) in enumerate(names(l2_pdf_data))
-    plot!(1:2:21,l2_pdf_data[:,col],
+    plot!(log10.(1:2:21),l2_pdf_data[:,col],
         label=col,linestyle=linestyles_vec[c],
         marker=markerstyles_vec[c],
         linewidth=2,color=colours[c])
 end
 plot!(xlabel="Dimension")
-plot!(ylabel="log₁₀ error")
+plot!(ylabel="Error"); error_ticks!(plot!())
 plot!(title="L² error - PDF")
 plot!(legend=:outerbottomright)
 plot!()
+@add_lines!(l2_pdf_data,("Unif","QBDRAP"),@__DIR__)
+
 savefig((@__DIR__)*"/l2_pdf_error_formatted.pdf")
+end
+p()
 
-
+function p()
 l1_cdf_data = CSV.read((@__DIR__)*"/../data/l1_cdf_errors.csv",DataFrame)
 @halfwidth_plot_defaults()
-p = plot()
+colours = [1;2;4]
+plot()
 linestyles_vec = [:solid,:dash,:dashdot, :dot]
 markerstyles_vec = [:cross,:diamond,:circle,:cross]
 for (c,col) in enumerate(names(l1_cdf_data))
-    plot!(1:2:21,l1_cdf_data[:,col],
+    plot!(log10.(1:2:21),l1_cdf_data[:,col],
         label=col,linestyle=linestyles_vec[c],
         marker=markerstyles_vec[c],
         linewidth=2,color=colours[c])
 end
 plot!(xlabel="Dimension")
-plot!(ylabel="log₁₀ error")
+plot!(ylabel="Error"); error_ticks!(plot!())
 plot!(title="L¹ error - CDF")
 plot!(legend=:outerbottomright)
 plot!()
+@add_lines!(l1_cdf_data,("Unif","QBDRAP"),@__DIR__)
+
 savefig((@__DIR__)*"/l1_cdf_error_formatted.pdf")
+end
+p()
 
 # @fullwidth_plot_defaults()
 # dir = @__DIR__()
@@ -185,7 +198,7 @@ savefig((@__DIR__)*"/l1_cdf_error_formatted.pdf")
 # linestyles_vec = [:solid,:dash,:dashdot, :dot]
 # markerstyles_vec = [:cross,:diamond,:circle,:dot]
 # for (c,reconstruction) in enumerate(names(L1_cell_probs_errors))
-#     plot!(1:2:21,L1_cell_probs_errors[:,reconstruction],label=reconstruction,
+#     plot!(log10.(1:2:21),L1_cell_probs_errors[:,reconstruction],label=reconstruction,
 #         linestyle=linestyles_vec[c],
 #         marker=markerstyles_vec[c],
 #         linewidth=2)
