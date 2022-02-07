@@ -16,7 +16,7 @@ function p()
 ks_data = CSV.read((@__DIR__)*"/../../data/errors/ks_"*ic*".csv",DataFrame)
 ks_data_lwr = CSV.read((@__DIR__)*"/../../data/errors/ks_lwr_"*ic*".csv",DataFrame)
 ks_data_upr = CSV.read((@__DIR__)*"/../../data/errors/ks_upr_"*ic*".csv",DataFrame)
-
+_names=["DG","DG (limit)", "Unif", "QBDRAP"]
 plot()
 linestyles_vec = [:solid,:dash,:dashdot, :dot]
 markerstyles_vec = [:cross,:diamond,:circle,:dot]
@@ -24,14 +24,14 @@ colours = [1;3;2;4]
 for (c,col) in enumerate(names(ks_data))
     plot!(log10.(1:2:21),log10.(ks_data[:,col]), 
         ribbon=(log10.(ks_data[:,col])-log10.(ks_data_lwr[:,col]),log10.(ks_data_upr[:,col])-log10.(ks_data[:,col])),
-        label=col,linestyle=linestyles_vec[c],
+        label=_names[c],linestyle=linestyles_vec[c],
         # marker=markerstyles_vec[c],
         linewidth=2,color=colours[c])
 end
 plot!(xlabel="Dimension")
 plot!(ylabel="Error"); error_ticks!(plot!())
 plot!(title="KS error")
-plot!(legend=:outerbottomright)
+plot!(legend=(0.8,0.8))
 plot!()
 @add_lines!(ks_data,("Unif","QBDRAP"),@__DIR__)
 savefig((@__DIR__)*"/ks_error_formatted.pdf")
@@ -48,19 +48,21 @@ plot()
 linestyles_vec = [:solid,:dash,:dashdot, :dot]
 markerstyles_vec = [:cross,:diamond,:circle,:cross]
 colours = [1;3;2;4]
+_names=["DG","DG (limit)", "Unif", "QBDRAP"]
 
 for (c,col) in enumerate(names(l1_cdf_data))
     plot!(log10.(1:2:21),log10.(l1_cdf_data[:,col]),
         ribbon=(log10.(l1_cdf_data[:,col])-log10.(l1_cdf_data_lwr[:,col]),log10.(l1_cdf_data_upr[:,col])-log10.(l1_cdf_data[:,col])),
-        label=col,linestyle=linestyles_vec[c],
+        label=_names[c],linestyle=linestyles_vec[c],
         # marker=markerstyles_vec[c],
         linewidth=2,color=colours[c])
 end
 plot!(xlabel="Dimension")
 plot!(ylabel="Error"); error_ticks!(plot!())
 plot!(title="L¹ error - CDF")
-plot!(legend=:outerbottomright)
-plot!()
+# plot!(legend=(0.95,0.95))
+plot!(legend=(0.215,0.535))
+plot!(ylims=ylims(plot!()).+(-0.13,0.0),xlims=xlims(plot!()).+(-0.03,0.0))
 @add_lines!(l1_cdf_data,("Unif","QBDRAP"),@__DIR__)
 
 savefig((@__DIR__)*"/l1_cdf_error_formatted.pdf")

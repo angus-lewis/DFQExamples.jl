@@ -31,7 +31,7 @@ end
 plot!(xlabel="Dimension")
 plot!(ylabel="Error")
 plot!(title="KS error")
-plot!(legend=:outerbottomright)
+plot!(legend=(0.225,0.55))
 error_ticks!(plot!())
 @add_lines!(ks_data,("Unif","QBDRAP"),@__DIR__)
 
@@ -61,7 +61,7 @@ end
 plot!(xlabel="Dimension")
 plot!(ylabel="Error"); error_ticks!(plot!())
 plot!(title="Cell-wise error")
-plot!(legend=:outerbottomright)
+plot!(legend=(0.225,0.55))
 plot!()
 @add_lines!(L1_cell_probs_data,("Unif","QBDRAP"),@__DIR__)
 
@@ -91,7 +91,7 @@ end
 plot!(xlabel="Dimension")
 plot!(ylabel="Error"); error_ticks!(plot!())
 plot!(title="L¹ error - CDF")
-plot!(legend=:outerbottomright)
+plot!(legend=(0.225,0.55))
 plot!()
 @add_lines!(l1_cdf_data,("Unif","QBDRAP"),@__DIR__)
 

@@ -24,7 +24,7 @@ end
 plot!(xlabel="Dimension")
 plot!(ylabel="Error"); error_ticks!(plot!())
 plot!(title="KS error between true CDF and reconstruction")
-plot!(legend=:outerbottomright)
+plot!(legend=(0.7,0.8))
 plot!()
 @add_lines!(ks_data,("Unif","QBDRAP"),@__DIR__)
 savefig((@__DIR__)*"/meshs_ks_error_formatted.pdf")
@@ -68,7 +68,7 @@ end
 plot!(xlabel="Dimension")
 plot!(ylabel="Error"); error_ticks!(plot!())
 plot!(title="L¹ error - CDF")
-plot!(legend=:outerbottomright)
+plot!(legend=(0.225,0.55))
 plot!()
 @add_lines!(l1_cdf_data,("Unif","QBDRAP"),@__DIR__)
 savefig((@__DIR__)*"/meshs_l1_cdf_error_formatted.pdf")
@@ -200,7 +200,7 @@ for (c,reconstruction) in enumerate(names(L1_cell_probs_errors))
 end
 plot!(xlabel="Dimension", ylabel="Error", 
     title="Error between cell probabilities",
-    legend=:outerbottomright)
+    legend=(0.225,0.55))
 error_ticks!(plot!())
 lines = @add_lines!(L1_cell_probs_errors,("Unif","QBDRAP"),@__DIR__)
 

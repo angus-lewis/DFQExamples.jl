@@ -1,4 +1,4 @@
-using CSV, DataFrames, Distributed
+using CSV, DataFrames#, Distributed
 
 function rerun_all(dir,filename_to_run)
     # @sync begin
@@ -18,7 +18,7 @@ function rerun_all(dir,filename_to_run)
         end
     end
     # end
-    rmprocs(procs()[2:end])
+    # rmprocs(procs()[2:end])
 end
 
 rerun_all(".","phd_ch_5_figs.jl")

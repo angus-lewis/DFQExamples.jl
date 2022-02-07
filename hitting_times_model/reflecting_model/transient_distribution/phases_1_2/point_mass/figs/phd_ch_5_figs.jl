@@ -31,7 +31,7 @@ end
 plot!(xlabel="Dimension")
 plot!(ylabel="Error"); error_ticks!(plot!())
 plot!(title="KS error - CDF")
-plot!(legend=:outerbottomright)
+plot!(legend=(0.8,0.97))
 plot!()
 @add_lines!(ks_data,("Unif","QBDRAP"),@__DIR__)
 
@@ -60,7 +60,7 @@ end
 plot!(xlabel="Dimension")
 plot!(ylabel="Error"); error_ticks!(plot!())
 plot!(title="Cell-wise error")
-plot!(legend=:outerbottomright)
+plot!(legend=(0.7,0.9))
 plot!()
 @add_lines!(L1_cell_probs_data,("Unif","QBDRAP"),@__DIR__)
 
@@ -118,8 +118,8 @@ end
 plot!(xlabel="Dimension")
 plot!(ylabel="Error"); error_ticks!(plot!())
 plot!(title="L¹ error - CDF")
-plot!(legend=:outerbottomright)
-plot!()
+plot!(legend=(0.215,0.54))
+plot!(ylims=ylims(plot!()).+(-0.175,00),xlims=xlims(plot!()).+(-0.0375,0))
 @add_lines!(l1_cdf_data,("Unif","QBDRAP"),@__DIR__)
 
 savefig((@__DIR__)*"/l1_cdf_error_formatted.pdf")

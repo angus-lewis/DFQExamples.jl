@@ -59,8 +59,8 @@ end
 plot!(xlabel="Dimension")
 plot!(ylabel="Error"); error_ticks!(plot!())
 plot!(title="L¹ error - CDF")
-plot!(legend=(0.7,0.92))
-plot!(ylims=(-2.5,-0.55))
+plot!(legend=(0.225,0.5))
+# plot!(ylims=(-2.5,-0.55))
 plot!()
  @add_lines!(l1_cdf_data,("Unif","QBDRAP"),@__DIR__)
 
@@ -90,7 +90,7 @@ end
 plot!(xlabel="Dimension")
 plot!(ylabel="Error"); error_ticks!(plot!())
 plot!(title="L¹ error - cell probabilities")
-plot!(legend=(0.7,0.92))
+plot!(legend=(0.225,0.5))
 plot!()
  @add_lines!(l1_cell_probs,("Unif","QBDRAP"),@__DIR__)
 

@@ -26,7 +26,7 @@ end
 plot!(xlabel="Dimension")
 plot!(ylabel="Error"); error_ticks!(plot!())
 plot!(title="KS error")
-plot!(legend=:outerbottomright)
+plot!(legend=(0.7,0.7))
 plot!()
 @add_lines!(ks_data,("Unif","QBDRAP"),@__DIR__)
 
@@ -50,7 +50,7 @@ end
 plot!(xlabel="Dimension")
 plot!(ylabel="Error"); error_ticks!(plot!())
 plot!(title="L² error - PDF")
-plot!(legend=:outerbottomright)
+plot!(legend=(0.7,0.8))
 plot!()
 @add_lines!(l2_pdf_data,("Unif","QBDRAP"),@__DIR__)
 
@@ -74,7 +74,7 @@ end
 plot!(xlabel="Dimension")
 plot!(ylabel="Error"); error_ticks!(plot!())
 plot!(title="L¹ error - CDF")
-plot!(legend=:outerbottomright)
+plot!(legend=(0.7,0.7))
 plot!()
 @add_lines!(l1_cdf_data,("Unif","QBDRAP"),@__DIR__)
 

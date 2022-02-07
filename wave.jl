@@ -70,7 +70,7 @@ jldopen("./wave/coeffs_matrix.jld2","r") do f
     global coeff_matrix=f["coeff_matrix"]
 end
 for (func_count,init_dist_fun) in enumerate(init_distns)
-    if func_count==4
+    # if func_count==9
         pth = mkpath((@__FILE__)[1:end-3]*"/func_count_"*string(func_count)*"/mesh_comp")
         mkpath(pth*"/data2")
         mkpath(pth*"/figs2")
@@ -97,6 +97,8 @@ for (func_count,init_dist_fun) in enumerate(init_distns)
                     c_mesh += 1
                     tmp_nodes = c_mesh==2 ? (nodes[1]:(hx/order):nodes[end]) : nodes
                     tmp_order = c_mesh==2 ? 1 : order
+                    tmp_nodes = c_mesh==3 ? (nodes[1]:(hx/((order+1)/2)):nodes[end]) : tmp_nodes ##
+                    tmp_order = c_mesh==3 ? 2 : tmp_order ##
                     mesh = mtype(tmp_nodes,tmp_order)
 
                     dq = DiscretisedFluidQueue(model,mesh)
@@ -104,14 +106,17 @@ for (func_count,init_dist_fun) in enumerate(init_distns)
 
                     d0 = init_dist_fun(dq)
 
-                    if !isassigned(coeff_matrix,func_count,c_order,c_mesh)
-                        throw(DomainError("huh?"))
+                    if (!isassigned(coeff_matrix,func_count,c_order,c_mesh))||(c_mesh==3)#||(c_mesh==2) ##
+                        # throw(DomainError("huh?"))
                         dt = ((mtype==DGMesh) && (c_mesh<3)) ? (limit_str=" NoLimit ";integrate_time(d0,B,t,StableRK4(h); limiter=NoLimiter)) : (limit_str=" ";integrate_time(d0,B,t,StableRK4(h)))
                         coeff_matrix[func_count,c_order,c_mesh] = dt.coeffs
                     else 
                         dt = SFMDistribution(coeff_matrix[func_count,c_order,c_mesh],dq)
                     end
-
+                    # global dt ##
+                    # @show order ##
+                    # @show tmp_order ##
+                    # @show c_mesh ##
                     rec = (mtype==FRAPMesh) ? plt_type(dt, eval(Symbol(:normalised_closing_operator_,plt_type))) : plt_type(dt)
 
                     ## errors 
@@ -242,7 +247,7 @@ for (func_count,init_dist_fun) in enumerate(init_distns)
         #display(q)
         file = pth*"/figs2/meshs_l2_pdf_"*"func_count_"*string(func_count)
         savefig(q,file*".svg")
-    end
+    # end
 end
 file = (@__FILE__)[1:end-3]*"/coeffs_matrix.jld2"
 # jldsave(file;coeff_matrix=coeff_matrix)
