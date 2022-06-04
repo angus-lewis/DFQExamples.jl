@@ -1,5 +1,5 @@
 Fit log(KS) = β₀ + β₁log(N), for method DG
-LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, LinearAlgebra.CholeskyPivoted{Float64, Matrix{Float64}}}}:
+LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, CholeskyPivoted{Float64, Matrix{Float64}}}}:
 
 Coefficients:
 ──────────────────────────────────────────────────────────────────────
@@ -10,7 +10,7 @@ x2  -0.028243  0.000592231    -47.69    <1e-08  -0.0296921  -0.0267939
 ──────────────────────────────────────────────────────────────────────
 
 Fit log(KS) = β₀ + β₁log(N), for method DG_limit
-LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, LinearAlgebra.CholeskyPivoted{Float64, Matrix{Float64}}}}:
+LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, CholeskyPivoted{Float64, Matrix{Float64}}}}:
 
 Coefficients:
 ──────────────────────────────────────────────────────────
@@ -21,7 +21,7 @@ x2    NaN         NaN  NaN       NaN        NaN        NaN
 ──────────────────────────────────────────────────────────
 
 Fit log(KS) = β₀ + β₁log(N), for method Unif
-LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, LinearAlgebra.CholeskyPivoted{Float64, Matrix{Float64}}}}:
+LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, CholeskyPivoted{Float64, Matrix{Float64}}}}:
 
 Coefficients:
 ───────────────────────────────────────────────────────────────────
@@ -32,7 +32,7 @@ x2  -0.104973  0.00289521   -36.26    <1e-07  -0.112058  -0.0978891
 ───────────────────────────────────────────────────────────────────
 
 Fit log(KS) = β₀ + β₁log(N), for method QBDRAP
-LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, LinearAlgebra.CholeskyPivoted{Float64, Matrix{Float64}}}}:
+LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, CholeskyPivoted{Float64, Matrix{Float64}}}}:
 
 Coefficients:
 ──────────────────────────────────────────────────────────────────

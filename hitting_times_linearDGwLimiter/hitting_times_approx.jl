@@ -1,6 +1,6 @@
 include((@__DIR__)*"/../preamble.jl") 
 
-include("absorbing_model/model_def.jl")
+include("reflecting_model/model_def.jl")
 include("default_params.jl")
 
 # look at time to exit of the interval [0,1]
@@ -9,16 +9,16 @@ model = BoundedFluidQueue(
     model.T[1:2,1:2],rates(model)[1:2],[0.0 1.0],[1.0 0.0],1.0,
 )
 
-dg_model(order) = build_discretised_model(DGMesh{t},model,1.0/3,order)
-order1_model(order) = build_discretised_model(DGMesh{t},model,1.0/3/order,1)
-qbdrap_model(order) = build_discretised_model(FRAPMesh{t},model,1.0/3,order)
+dg_model(order) = build_discretised_model(DGMesh{t},model,(1.0/3)/((order+1)/2),2)
+# order1_model(order) = build_discretised_model(DGMesh{t},model,1.0/3/order,1)
+# qbdrap_model(order) = build_discretised_model(FRAPMesh{t},model,1.0/3,order)
 
 d0_map_point_mass(dq) = (interior_point_mass(eps(),1,dq).coeffs)
 d0_map_exp(dq) = (SFMDistribution((x,i)->(i∈(1:2))*exp(-x)/(1-exp(-model.b))/2,dq).coeffs)
 
 # change d0_map here to do the make_approximations for ohter initial confitions
 # remember to change write directory below too
-models = make_approximations(orders,approx_types,d0_map_point_mass,(args...)->args[1])
+models = make_approximations(orders,approx_types,d0_map_exp,(args...)->args[1])
 
 for k1 in keys(models)
     for k2 in keys(models[k1])
@@ -28,7 +28,7 @@ for k1 in keys(models)
     end
 end
 
-pth = mkpath((@__DIR__)*"/hitting_times/data/point_mass")
+pth = mkpath((@__DIR__)*"/hitting_times/data/exp")
 
 h = 0.005/3
 t_vec = 0.0:h:10.0
@@ -43,7 +43,7 @@ for k1 in keys(models)
                     models[k1][k2]["B"],
                     h,
                     StableRK4(h),
-                    (k2!="dg2" ? identity : (x->GeneralisedMUSCL.fun(x,GeneralisedMUSCL.generate_params(models[k1][k2]["dq"])...))),
+                    x->GeneralisedMUSCL.fun(x,GeneralisedMUSCL.generate_params(models[k1][k2]["dq"])...),
                 )
             hitting_times_cdf[c,2:3] = models[k1][k2]["coeffs_mapped"][[1;end]]
         end

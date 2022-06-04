@@ -1,29 +1,30 @@
 include((@__DIR__)*"/../preamble.jl") 
 
-include("absorbing_model/model_def.jl")
+include("reflecting_model/model_def.jl")
 include("default_params.jl")
 
-pth = mkpath("hitting_times_model/hitting_times/data/errors")
+pth = mkpath((@__DIR__)*"/hitting_times/data/errors")
 
-for ic_string in ["exp", "point_mass"]
-    ks_error_lwr = DataFrame(DG=[],DG_limit=[],Order_1=[],QBDRAP=[])
-    l1_error_lwr = DataFrame(DG=[],DG_limit=[],Order_1=[],QBDRAP=[])
-    ks_error_upr = DataFrame(DG=[],DG_limit=[],Order_1=[],QBDRAP=[])
-    l1_error_upr = DataFrame(DG=[],DG_limit=[],Order_1=[],QBDRAP=[])
+for ic_string in (ic,)
+    ks_error_lwr = DataFrame(DG_limit=[])
+    l1_error_lwr = DataFrame(DG_limit=[])
+    ks_error_upr = DataFrame(DG_limit=[])
+    l1_error_upr = DataFrame(DG_limit=[])
     for order in orders
-        ks_error_row_lwr = zeros(4)
-        l1_error_row_lwr = zeros(4)
-        ks_error_row_upr = zeros(4)
-        l1_error_row_upr = zeros(4)
-        for (c,model_string) in enumerate(string.([approx_types...]).*string.(1:4))
+        ks_error_row_lwr = zeros(1)
+        l1_error_row_lwr = zeros(1)
+        ks_error_row_upr = zeros(1)
+        l1_error_row_upr = zeros(1)
+        # for (c,model_string) in [:dg;]
+        c=1
             ks_error_samples = zeros(n_boot)
             l1_error_samples = zeros(n_boot)
             for n in 1:n_boot
                 cdf_boot = CSV.read("hitting_times_model/hitting_times/data/"*
                     ic_string*"/bootstrap/bootsample_"*string(n)*".csv",DataFrame)
 
-                approx_data = CSV.read("hitting_times_model/hitting_times/data/"*
-                    ic_string*"/order_"*string(order)*"_model_"*model_string*".csv",DataFrame)
+                approx_data = CSV.read((@__DIR__)*"/hitting_times/data/"*
+                    ic_string*"/order_"*string(order)*"_model_dg1.csv",DataFrame)
                 
                 ks_error_samples[n] = max(
                     maximum(abs.(approx_data.phase_1-cdf_boot.phase_1)),
@@ -42,7 +43,7 @@ for ic_string in ["exp", "point_mass"]
             ks_error_row_upr[c] = ks_q95
             l1_error_row_lwr[c] = l1_q5
             l1_error_row_upr[c] = l1_q95
-        end
+        # end
         push!(ks_error_lwr,ks_error_row_lwr)
         push!(ks_error_upr,ks_error_row_upr)
         push!(l1_error_lwr,l1_error_row_lwr)

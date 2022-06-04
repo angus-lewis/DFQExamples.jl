@@ -32,7 +32,7 @@ end
 plot!(xlabel="Dimension")
 plot!(ylabel="Error"); error_ticks!(plot!())
 plot!(title="KS error")
-plot!(legend=(0.7,0.9))
+# plot!(legend=(0.7,0.9))
 plot!()
 savefig((@__DIR__)*"/ks_error_formatted.pdf")
 end
@@ -59,7 +59,7 @@ end
 plot!(xlabel="Dimension")
 plot!(ylabel="Error"); error_ticks!(plot!())
 plot!(title="L¹ error - CDF")
-plot!(legend=(0.7,0.9))
+# plot!(legend=(0.7,0.9))
 plot!()
 savefig((@__DIR__)*"/l1_cdf_error_formatted.pdf")
 end
@@ -87,7 +87,7 @@ end
 plot!(xlabel="Dimension")
 plot!(ylabel="Error"); error_ticks!(plot!())
 plot!(title="L¹ error - cell probabilities")
-plot!(legend=(0.7,0.9))
+# plot!(legend=(0.7,0.9))
 plot!()
 savefig((@__DIR__)*"/l1_cell_probs_error_formatted.pdf")
 end

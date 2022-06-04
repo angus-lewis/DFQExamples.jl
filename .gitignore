@@ -41,3 +41,11 @@ hitting_times_model/hitting_times/data/point_mass/sims.csv
 fluidfluid_continuous/data/sims.csv
 fluidfluid_discontinuous/data/sims.csv
 
+*50_000_000_000_boot.json
+*50_000_000_000.json
+exp_ic_sims.zip
+
+**/*.pdf
+**/*.txt
+**/*.csv
+**/*.json

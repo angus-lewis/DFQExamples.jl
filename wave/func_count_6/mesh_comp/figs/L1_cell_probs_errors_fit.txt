@@ -1,44 +1,55 @@
 Fit log(KS) = β₀ + β₁log(N), for method DG
-LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, LinearAlgebra.CholeskyPivoted{Float64, Matrix{Float64}}}}:
+LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, CholeskyPivoted{Float64, Matrix{Float64}}}}:
 
 Coefficients:
-─────────────────────────────────────────────────────────────────────────
-           Coef.  Std. Error        t  Pr(>|t|)    Lower 95%    Upper 95%
-─────────────────────────────────────────────────────────────────────────
-x1  -3.67378      0.00394125  -932.13    <1e-15  -3.68342     -3.66413
-x2  -0.000827728  0.00348517    -0.24    0.8202  -0.00935564   0.00770018
-─────────────────────────────────────────────────────────────────────────
+────────────────────────────────────────────────────────────────────────
+           Coef.  Std. Error        t  Pr(>|t|)   Lower 95%    Upper 95%
+────────────────────────────────────────────────────────────────────────
+x1  -3.67448      0.00413695  -888.21    <1e-15  -3.6846     -3.66436
+x2  -0.000991239  0.00365823    -0.27    0.7955  -0.0099426   0.00796012
+────────────────────────────────────────────────────────────────────────
 
 Fit log(KS) = β₀ + β₁log(N), for method Unif
-LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, LinearAlgebra.CholeskyPivoted{Float64, Matrix{Float64}}}}:
+LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, CholeskyPivoted{Float64, Matrix{Float64}}}}:
 
 Coefficients:
 ─────────────────────────────────────────────────────────────────
         Coef.  Std. Error       t  Pr(>|t|)  Lower 95%  Upper 95%
 ─────────────────────────────────────────────────────────────────
-x1   0.254941   0.0156142   16.33    <1e-05   0.216734   0.293147
-x2  -0.61997    0.0138074  -44.90    <1e-08  -0.653755  -0.586184
+x1   0.25494    0.0156142   16.33    <1e-05   0.216734   0.293147
+x2  -0.619969   0.0138073  -44.90    <1e-08  -0.653754  -0.586184
 ─────────────────────────────────────────────────────────────────
 
 Fit log(KS) = β₀ + β₁log(N), for method DG_limiter
-LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, LinearAlgebra.CholeskyPivoted{Float64, Matrix{Float64}}}}:
+LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, CholeskyPivoted{Float64, Matrix{Float64}}}}:
 
 Coefficients:
 ───────────────────────────────────────────────────────────────────────
           Coef.  Std. Error       t  Pr(>|t|)    Lower 95%    Upper 95%
 ───────────────────────────────────────────────────────────────────────
-x1  -0.063364    0.00106821  -59.32    <1e-08  -0.0659779   -0.0607502
+x1  -0.0633638   0.00106821  -59.32    <1e-08  -0.0659777   -0.06075
 x2   0.00536564  0.0009446     5.68    0.0013   0.00305429   0.00767699
 ───────────────────────────────────────────────────────────────────────
 
 Fit log(KS) = β₀ + β₁log(N), for method QBDRAP
-LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, LinearAlgebra.CholeskyPivoted{Float64, Matrix{Float64}}}}:
+LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, CholeskyPivoted{Float64, Matrix{Float64}}}}:
 
 Coefficients:
 ─────────────────────────────────────────────────────────────────
         Coef.  Std. Error       t  Pr(>|t|)  Lower 95%  Upper 95%
 ─────────────────────────────────────────────────────────────────
-x1   0.903889   0.0325615   27.76    <1e-06   0.824214   0.983564
-x2  -1.76576    0.0287935  -61.33    <1e-08  -1.83622   -1.69531
+x1   0.903882   0.0325604   27.76    <1e-06    0.82421   0.983555
+x2  -1.76575    0.0287925  -61.33    <1e-08   -1.83621  -1.6953
 ─────────────────────────────────────────────────────────────────
+
+Fit log(KS) = β₀ + β₁log(N), for method DG_lin_lim
+LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, CholeskyPivoted{Float64, Matrix{Float64}}}}:
+
+Coefficients:
+────────────────────────────────────────────────────────────────
+       Coef.  Std. Error       t  Pr(>|t|)  Lower 95%  Upper 95%
+────────────────────────────────────────────────────────────────
+x1   2.93196    0.210148   13.95    <1e-05    2.41775    3.44617
+x2  -4.10188    0.180748  -22.69    <1e-06   -4.54415   -3.6596
+────────────────────────────────────────────────────────────────
 

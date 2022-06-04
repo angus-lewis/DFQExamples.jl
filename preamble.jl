@@ -1,7 +1,7 @@
 import Pkg
 println(@__DIR__)
 if !occursin("DFQExamples.jl", Base.active_project())
-    # Pkg.add(url="https://github.com/angus-lewis/DiscretisedFluidQueues")
+    Pkg.add(url="https://github.com/angus-lewis/DiscretisedFluidQueues")
     # Pkg.rm("DiscretisedFluidQueues")
     Pkg.activate(@__DIR__)
     #Pkg.develop(url=(@__DIR__)*"/../DiscretisedFluidQueues.jl")

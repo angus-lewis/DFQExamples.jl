@@ -1,5 +1,5 @@
-include((@__DIR__)*"/../preamble.jl")
-
+# include((@__DIR__)*"/../preamble.jl")
+function make_model()
 # generic parameters
 γ₁ = 11.0; β₁ = 1.0; λ₁ = 12.48; θ₁ = 1.6; κ = 2.6
 γ₂ = 22.0; β₂ = 1.0; λ₂ = 16.25; θ₂ = 1.0; xˢ = 1.6
@@ -75,3 +75,7 @@ mesh_sim = DGMesh(nodes_sim,1)
 dq_sim = DiscretisedFluidQueue(first_fluid_sim,mesh_sim)
 
 ffq_sim = FluidFluidQueue(dq_sim,r_interior_sim,r_lwr,r_upr)
+return ffq_sim
+end
+
+const model = make_model()

@@ -1,5 +1,5 @@
 # include("../preamble.jl")
-# include((@__DIR__)*"/../../preamble.jl")
+include((@__DIR__)*"/../../preamble.jl")
 
 T_reflecting = [-1.1 1.1; 1.0 -1.0]
 c_reflecting = [1.0; -1.0]

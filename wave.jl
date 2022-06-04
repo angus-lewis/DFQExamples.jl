@@ -21,7 +21,7 @@ CDF0s = [
     (z,i)->(z*(z<1.0) + Float64(z>=1.0))*(i==1)*(z>=0.0);
     (z,i)->(z^3/10^3)*(i==1)*(z>=0.0)*(z<6.0) + (z>=6.0)*(i==1);
     # (z,i)->-2*z^3+3*z^2;
-    (z,i)->norm_cdf(z)/(1-norm_cdf(-2.5))*(i==1)*(z>=0.0)#((norm_cdf(z)-norm_cdf(z-2.5))/(1-norm_cdf(z-2.5)))*(i==1)*(z>=0.0)*(z<6.0) + (z>=6.0)*(i==1);
+    (z,i)->(norm_cdf(z)-norm_cdf(0))/(norm_cdf(10)-norm_cdf(0))*(i==1)*(z>=0.0)#((norm_cdf(z)-norm_cdf(z-2.5))/(1-norm_cdf(z-2.5)))*(i==1)*(z>=0.0)*(z<6.0) + (z>=6.0)*(i==1);
     (z,i)->(2*(z/2 - sin(2*pi*z)/(4*pi))*(z<1.0) + Float64(z>=1.0))*(i==1)*(z>=0.0);
     (z,i)->((2*(z/2 - sin(2*pi*z)/(4*pi)))/10.0)*(i==1)*(z>=0.0)*(z<6.0) + (i==1)*(z>=0.0)*(z>=6.0);
     (z,i)->((cdf(ConcentratedMatrixExponential(5,mean=2.5))(z))./(cdf(ConcentratedMatrixExponential(5,mean=2.5))(10.0)))*(i==1)*(z>=0.0)*(z<6.0) + (z>=6.0)*(i==1)
@@ -34,18 +34,18 @@ PDF0s = [
     (z,i)->1.0*(z<1.0)*(i==1)*(z>=0.0)*(z<6.0);
     (z,i)->z^2*3/10^3*(i==1)*(z>=0.0)*(z<6.0);
     # (z,i)->-6*z^2+6*z;
-    (z,i)->(norm_pdf(z)/(1-norm_cdf(0-2.5)))*(i==1)*(z>=0.0)*(z<6.0);
+    (z,i)->(norm_pdf(z)/(norm_cdf(10)-norm_cdf(0)))*(i==1)*(z>=0.0)*(z<6.0);
     (z,i)->((cos(2*π*(z+0.5))+1)*(z<1.0))*(i==1)*(z>=0.0)*(z<6.0);
     (z,i)->(cos(2*π*(z+0.5))+1)/10*(i==1)*(z>=0.0);
     (z,i)->pdf(ConcentratedMatrixExponential(5,mean=2.5))(z)*(i==1)*(z>=0.0)./cdf(ConcentratedMatrixExponential(5,mean=2.5))(10.0)*(z<6.0)
     ]
 CDFs = [ (z,j)->exp(T[2,2]*t)*(exp(-T[2,2]*z/c[1])-1)*(z<=c[1]*t) + (z>c[1]*t)*(1-exp(T[2,2]*t)); 
     [(z,j)->CDF0s[i](z-t,j) for i in 2:length(CDF0s)]]
-CDFs[6] = (z,i)->norm_cdf(z-t)/(1-norm_cdf(-2.5))*(i==1)*(z>=t)
+CDFs[6] = (z,i)->(norm_cdf(z-t)-norm_cdf(0))/(norm_cdf(10)-norm_cdf(0))*(i==1)*(z>=t)*(z<10) + 1(z>=10)
 
 PDFs = [(z,j)->exp(T[2,2]*t)*exp(-T[2,2]*z/c[1])*-T[2,2]/c[1]*(z<=c[1]*t);
     [(z,j)->PDF0s[i](z-t,j) for i in 2:length(PDF0s)]]
-PDFs[6] = (z,i)->(norm_pdf(z-t)/(1-norm_cdf(t-2.5)))*(i==1)*(z>=t);
+PDFs[6] = (z,i)->(norm_pdf(z-t)/(norm_cdf(10)-norm_cdf(0)))*(i==1)*(z>=t);
 
 init_distns = [x->left_point_mass(2,x);
          x->interior_point_mass(0.5,1,x);
@@ -70,7 +70,7 @@ jldopen("./wave/coeffs_matrix.jld2","r") do f
     global coeff_matrix=f["coeff_matrix"]
 end
 for (func_count,init_dist_fun) in enumerate(init_distns)
-    # if func_count==9
+    if func_count==6
         pth = mkpath((@__FILE__)[1:end-3]*"/func_count_"*string(func_count)*"/mesh_comp")
         mkpath(pth*"/data2")
         mkpath(pth*"/figs2")
@@ -105,8 +105,9 @@ for (func_count,init_dist_fun) in enumerate(init_distns)
                     B = build_full_generator(dq)
 
                     d0 = init_dist_fun(dq)
-
-                    if (!isassigned(coeff_matrix,func_count,c_order,c_mesh))||(c_mesh==3)#||(c_mesh==2) ##
+                    
+                    # rerun only those that need it
+                    if (!isassigned(coeff_matrix,func_count,c_order,c_mesh))||(func_count==6)#||(c_mesh==3)#||(c_mesh==2) ##
                         # throw(DomainError("huh?"))
                         dt = ((mtype==DGMesh) && (c_mesh<3)) ? (limit_str=" NoLimit ";integrate_time(d0,B,t,StableRK4(h); limiter=NoLimiter)) : (limit_str=" ";integrate_time(d0,B,t,StableRK4(h)))
                         coeff_matrix[func_count,c_order,c_mesh] = dt.coeffs
@@ -247,7 +248,7 @@ for (func_count,init_dist_fun) in enumerate(init_distns)
         #display(q)
         file = pth*"/figs2/meshs_l2_pdf_"*"func_count_"*string(func_count)
         savefig(q,file*".svg")
-    # end
+    end
 end
 file = (@__FILE__)[1:end-3]*"/coeffs_matrix.jld2"
 # jldsave(file;coeff_matrix=coeff_matrix)

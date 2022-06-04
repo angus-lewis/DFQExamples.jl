@@ -2,13 +2,14 @@ using Plots, GLM
 plotlyjs() 
 macro halfwidth_plot_defaults()
     return :(default(
-        legendfontsize=16,
+        legendfontsize=14,
         titlefontsize=18,
         xlabelfontsize=18,
         ylabelfontsize=18,
         xtickfontsize=18,
         ytickfontsize=18,
         fg_legend=:false,
+        legend=:outerbottomright,
     ))
 end
 
@@ -42,11 +43,18 @@ end
 function fit_error_lm(data_name,data,dir)
     lines = Dict()
     open(dir*"/"*data_name*"_fit.txt","w") do io 
-        for n in names(data)
-            m = lm([ones(8) log10.(7:2:21)], data[4:end,n])
-            println(io,string("Fit log(KS) = β₀ + β₁log(N), for method ",n))
-            println(io,m)
-            lines[n] = (x=log10.(7:2:21),y=[ones(8) log10.(7:2:21)]*coef(m),slope=coef(m)[2],p=coeftable(m).cols[4][2])
+        for (c,n) in enumerate(names(data))
+            if c<5
+                m = lm([ones(8) log10.(7:2:21)], data[4:end,n])
+                println(io,string("Fit log(KS) = β₀ + β₁log(N), for method ",n))
+                println(io,m)
+                lines[n] = (x=log10.(7:2:21),y=[ones(8) log10.(7:2:21)]*coef(m),slope=coef(m)[2],p=coeftable(m).cols[4][2])
+            else
+                m = lm([ones(8) log10.((7:2:21).+1)], data[4:end,n])
+                println(io,string("Fit log(KS) = β₀ + β₁log(N), for method ",n))
+                println(io,m)
+                lines[n] = (x=log10.((7:2:21).+1),y=[ones(8) log10.((7:2:21).+1)]*coef(m),slope=coef(m)[2],p=coeftable(m).cols[4][2])
+            end
         end
     end
     return lines
@@ -87,19 +95,8 @@ function add_lines!(data_name,data,names_set,dir)
     else
         lines = fit_error_lm_log_first(data_name,data,dir)
     end
-    if "Unif"∈names_set
-        names_set = (names_set...,"Order","order13")
-    end
-    if "DG_limiter"∈names_set
-        names_set = (names_set...,"dg2","DG (limit)")
-    end
-    if "QBDRAP"∈names_set
-        names_set = (names_set...,"qbdrap4","QBD-RAP","QBD RAP")
-    end
-    if "DG"∈names_set
-        names_set = (names_set...,"dg1")
-    end
-    plot!(xlims=(xlims(plot!())[1],log10(21)+0.1))#.+(0,0.05))
+
+    plot!(xlims=(xlims(plot!())[1],log10(21)+0.125))#.+(0,0.05))
     biggest = maximum(abs.([lines[i].y[end] for i in names(data)]))
     for col in names(data)
         distances = (lines[col].y[end].-[lines[i].y[end] for i in names(data[:,Not(col)])])./biggest
@@ -111,9 +108,9 @@ function add_lines!(data_name,data,names_set,dir)
                 color=:black,linewidth=2,
                 # series_annotation=[fill("",length(lines[col].x)-1);string("",round(lines[col].slope,digits=2))],
             )
-            if (abs(closest)<0.1)&&(closest<=0.0)
+            if (abs(closest)<0.05)&&(closest<=0.0)
                 annotate!((lines[col].x[end]+0.09,lines[col].y[end]-0.025*biggest,string(round(lines[col].slope,digits=2))))
-            elseif (abs(closest)<0.1)&&(closest>0.0)
+            elseif (abs(closest)<0.05)&&(closest>0.0)
                 annotate!((lines[col].x[end]+0.09,lines[col].y[end]+0.025*biggest,string(round(lines[col].slope,digits=2))))
             else
                 annotate!((lines[col].x[end]+0.09,lines[col].y[end],string(round(lines[col].slope,digits=2))))

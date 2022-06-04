@@ -1,21 +1,21 @@
 include((@__DIR__)*"/../preamble.jl") 
 
-include("absorbing_model/model_def.jl")
+include("reflecting_model/model_def.jl")
 include("default_params.jl")
 
-tvec = CSV.read("hitting_times_model/hitting_times/data/point_mass/order_1_model_dg1.csv",DataFrame).t
+tvec = CSV.read((@__DIR__)*"/hitting_times/data/point_mass/order_1_model_dg1.csv",DataFrame).t
 
-pth = mkpath("hitting_times_model/hitting_times/data/errors")
+pth = mkpath((@__DIR__)*"/hitting_times/data/errors")
 for ic_string in ["point_mass","exp"]
-    ks_errors = DataFrame(DG=[],DG_limit=[],Order_1=[],QBDRAP=[])
-    l1_errors = DataFrame(DG=[],DG_limit=[],Order_1=[],QBDRAP=[])
-    ks_error_row = zeros(4)
-    l1_error_row = zeros(4)
+    ks_errors = DataFrame(DG_limit=[])
+    l1_errors = DataFrame(DG_limit=[])
+    ks_error_row = zeros(1)
+    l1_error_row = zeros(1)
 
     sim_cdf = CSV.read("hitting_times_model/hitting_times/data/"*ic_string*"/sims_cdf_evaluated.csv",DataFrame)
     for order in 1:2:21
-        for (c,model_string) in enumerate(["dg1","dg2","order13","qbdrap4"])
-            approx_data = CSV.read("hitting_times_model/hitting_times/data/"*
+        for (c,model_string) in enumerate(["dg1"])
+            approx_data = CSV.read((@__DIR__)*"/hitting_times/data/"*
                 ic_string*"/order_"*string(order)*"_model_"*model_string*".csv",DataFrame)
             ks_error = max(
                 maximum(abs.(approx_data.phase_1-sim_cdf.phase_1)),
