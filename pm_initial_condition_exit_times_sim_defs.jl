@@ -6,6 +6,7 @@ const _first_exit = first_exit_x(0.5*eps(),1.0)
 function first_exit_or_t10(model,SFM,SFM0)
     t1 = _first_exit(model,SFM,SFM0)
     i2 = SFM.t>10.0
+    i2 && SFM = (t=10.0, X=SFM.X, φ=SFM.φ, n=SFM.m)
     return (Ind=(i2||t1.Ind), SFM=t1.SFM)
 end
 

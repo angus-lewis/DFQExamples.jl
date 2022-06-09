@@ -5,7 +5,7 @@ function initial_condition_generator(rng,n,model)
     X = Vector{Float64}(undef,n)
     for k in 1:n
         x = Inf
-        while x>=model.b
+        while x>=1
             x = -log(rand(rng))
         end
         X[k]=x
