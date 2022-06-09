@@ -1,6 +1,6 @@
-if length(ARGS)∉(7,)
+if length(ARGS)∉(7,8)
     println("usage: (assuming you are running from DFQExamples.jl directory)")
-    println("  julia -p n_procs empirical_cdfs.jl ARGS[1] ... ARGS[7]")
+    println("  julia -p n_procs empirical_cdfs.jl ARGS[1] ... ARGS[7] [ARGS[8]]")
     println("  where:")
     println("    n_procs: the number of workers to run (and hence number of output files as each worker writes its own data)")
     println("             n_procs+1 cpus will be used in total")
@@ -11,7 +11,7 @@ if length(ARGS)∉(7,)
     println("    ARGS[5]: seed for rng")
     println("    ARGS[6]: filepath to write CDF to")
     println("    ARGS[7]: filepath to write bootstrap sample of CDFs to")
-    # println("    ARGS[8]: (opional) n_procs, the number of processors to use for simulation and bootstrap")
+    println("    ARGS[8]: (opional) true/false, to specify whether to record time or position of fluid at the stopping time of the sim, default false")
     throw(ArgumentError("Wrong number of arguments"))
 end
 
@@ -36,17 +36,19 @@ const n_sims = parse(Int, ARGS[3]) # define number of sims to do
 const n_boot = parse(Int, ARGS[4]) # number of bootstrap sample to do
 const seed = parse(Int, ARGS[5]) # set rng seed
 const rng = MersenneTwister(seed)
+const record_time = length(ARGS)>7 ? parse(Bool, ARGS[8]) : false # specify whether to record time or position of sim
 
 @everywhere begin
     function _simulate(model::FluidFluidQueue, tau, ic) 
         rest, ~ = simulate(model, tau, ic)
         X = rest.X
         φ = Int.(rest.φ)
-        return (X=X, φ=φ)
+        t = rest.t
+        return (X=X, φ=φ, t=t)
     end
     _simulate(model, tau, ic) = simulate(model, tau, ic)
 end
-@everywhere function empirical_cdf(rng, ic_generator, model, n_sims, tau, x::AbstractRange)
+@everywhere function empirical_cdf(rng, ic_generator, model, n_sims, tau, x::AbstractRange, record_time=false)
     println("Simulating...")
     cdf = zeros(Int, length(x)+1, typeof(model)===BoundedFluidQueue ? 2 : 4)
     f, h = first(x), step(x)
@@ -69,10 +71,10 @@ end
         # simulate from model 
         ic = ic_generator(rng,1,model)
         sim_tau = _simulate(model, tau, ic)
-        Xτ, φτ = only(sim_tau.X), only(sim_tau.φ)
-
+        Xτ, φτ, tτ = only(sim_tau.X), only(sim_tau.φ), only(sim_tau.t)
+        quantity_of_interest = record_time ? tτ : Xτ
         # add to cdf
-        idx = ceil(Int, (Xτ - f) / h)+1
+        idx = ceil(Int, (quantity_of_interest - f) / h)+1
         # idx = Xτ<x[idx] ? idx-1 : idx
         cdf[idx, φτ] += 1
     end
@@ -138,8 +140,8 @@ end
     end
 end
 
-@everywhere function sim_and_write(write_path, rng, initial_condition_generator, model, n_sims, tau, x)
-    ecdf = empirical_cdf(rng, initial_condition_generator, model, n_sims, tau, x)
+@everywhere function sim_and_write(write_path, rng, initial_condition_generator, model, n_sims, tau, x, record_time)
+    ecdf = empirical_cdf(rng, initial_condition_generator, model, n_sims, tau, x, record_time)
     JSON.write(write_path, JSON.json(ecdf))
     return nothing 
 end
@@ -148,11 +150,11 @@ end
     for n in n_procs+1:-1:3
         local_rng = MersenneTwister(rand(rng, UInt32)) # make sure rngs on each thread are distinct
         local_write_file = "proc_"*string(ps[n])*"_"*ARGS[6]
-        @spawnat ps[n] sim_and_write(local_write_file, rng, initial_condition_generator, model, n_sims÷n_procs, tau, x)
+        @spawnat ps[n] sim_and_write(local_write_file, rng, initial_condition_generator, model, n_sims÷n_procs, tau, x, record_time)
     end
     local_rng = MersenneTwister(rand(rng, UInt32)) # make sure rngs on each thread are distinct
     local_write_file = "proc_"*string(ps[2])*"_"*ARGS[6]
-    @spawnat ps[2] sim_and_write(local_write_file, local_rng, initial_condition_generator, model, n_sims-(n_procs-1)*(n_sims÷n_procs), tau, x)
+    @spawnat ps[2] sim_and_write(local_write_file, local_rng, initial_condition_generator, model, n_sims-(n_procs-1)*(n_sims÷n_procs), tau, x, record_time)
 end
 
 local_cdf_paths = "proc_".*string.(ps[2:end]).*"_".*ARGS[6]
